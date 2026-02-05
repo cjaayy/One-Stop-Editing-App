@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/logo_widget.dart';
+import 'login_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   final String email;
@@ -146,7 +147,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 // Back to login
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
                   },
                   child: const Text(
                     'Back to Login',
