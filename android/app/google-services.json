@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "292972223731",
+    "project_id": "one-stop-editing-app",
+    "storage_bucket": "one-stop-editing-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292972223731:android:952c2032b02835adbeab86",
+        "android_client_info": {
+          "package_name": "com.onestopeditor.one_stop_editor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0grgBqLbLm8RC8HC29fomDxmeE8hS4YU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
