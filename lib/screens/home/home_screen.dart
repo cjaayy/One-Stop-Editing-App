@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/logo_widget.dart';
 import '../auth/login_screen.dart';
+import '../templates/templates_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -207,7 +208,14 @@ class _HomeScreenState extends State<HomeScreen>
             title: 'Templates',
             subtitle: 'Browse designs',
             gradient: const [Color(0xFFE91E63), Color(0xFFFF5722)],
-            onTap: () => _showFeatureSnackBar('Templates'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TemplatesScreen(),
+                ),
+              );
+            },
           ),
         ),
         const SizedBox(width: 16),
