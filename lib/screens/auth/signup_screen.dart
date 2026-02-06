@@ -144,7 +144,6 @@ class _SignupScreenState extends State<SignupScreen>
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final size = MediaQuery.of(context).size;
 
     return LoadingOverlay(
       isLoading: authProvider.isLoading,
@@ -394,10 +393,7 @@ class _SignupScreenState extends State<SignupScreen>
                       fontWeight: FontWeight.w600,
                       decoration: TextDecoration.underline,
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // TODO: Navigate to Terms of Service
-                      },
+                    recognizer: TapGestureRecognizer()..onTap = () {},
                   ),
                   const TextSpan(text: ' and '),
                   TextSpan(
@@ -407,10 +403,7 @@ class _SignupScreenState extends State<SignupScreen>
                       fontWeight: FontWeight.w600,
                       decoration: TextDecoration.underline,
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // TODO: Navigate to Privacy Policy
-                      },
+                    recognizer: TapGestureRecognizer()..onTap = () {},
                   ),
                 ],
               ),
@@ -483,7 +476,6 @@ class _SignupScreenState extends State<SignupScreen>
           backgroundColor: Colors.white,
           textColor: Colors.black87,
           onPressed: () {
-            // TODO: Implement Google sign up
             _showErrorSnackBar('Google sign up coming soon!');
           },
         ),
@@ -495,7 +487,6 @@ class _SignupScreenState extends State<SignupScreen>
           textColor: Colors.white,
           iconColor: Colors.white,
           onPressed: () {
-            // TODO: Implement Apple sign up
             _showErrorSnackBar('Apple sign up coming soon!');
           },
         ),

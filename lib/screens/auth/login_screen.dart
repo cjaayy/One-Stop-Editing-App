@@ -355,7 +355,6 @@ class _LoginScreenState extends State<LoginScreen>
         // Forgot password
         GestureDetector(
           onTap: () {
-            // TODO: Implement forgot password
             _showErrorSnackBar('Forgot password feature coming soon!');
           },
           child: const Text(

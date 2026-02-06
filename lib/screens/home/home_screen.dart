@@ -389,10 +389,11 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context);
+              final navigator = Navigator.of(context);
+              navigator.pop();
               await authProvider.signOut();
               if (mounted) {
-                Navigator.of(context).pushReplacement(
+                navigator.pushReplacement(
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               }
