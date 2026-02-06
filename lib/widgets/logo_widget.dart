@@ -39,7 +39,7 @@ class LogoWidget extends StatelessWidget {
               ),
             ),
             Text(
-              'Editor',
+              'Editing',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: fontSize,
