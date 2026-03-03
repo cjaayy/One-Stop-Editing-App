@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:gal/gal.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -26,6 +26,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   late Animation<double> _fadeAnimation;
 
   final GlobalKey _collageKey = GlobalKey();
+  static const _galleryChannel = MethodChannel('com.onestopeditor/gallery');
 
   late List<File?> _images;
   double _spacing = 4.0;
@@ -286,18 +287,11 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
       final file = File(filePath);
       await file.writeAsBytes(pngBytes);
 
-      // Check for gallery access permission
-      final hasAccess = await Gal.hasAccess(toAlbum: true);
-      if (!hasAccess) {
-        final granted = await Gal.requestAccess(toAlbum: true);
-        if (!granted) {
-          throw Exception(
-              'Gallery access denied. Please grant permission in Settings.');
-        }
-      }
-
-      // Save to device gallery using Gal (uses MediaStore on Android)
-      await Gal.putImage(filePath, album: 'OneStopEditor');
+      // Save to device gallery via native method channel (MediaStore)
+      await _galleryChannel.invokeMethod('saveImageToGallery', {
+        'filePath': filePath,
+        'albumName': 'OneStopEditor',
+      });
       debugPrint('CollageEditor: Saved to gallery successfully');
 
       // Clean up temp file
