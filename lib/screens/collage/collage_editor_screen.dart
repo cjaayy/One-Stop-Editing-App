@@ -159,59 +159,61 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   }
 
   void _showImageSourcePicker(int index) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF2D1F3D),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Add Photo',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _ImageSourceOption(
-                    icon: Icons.photo_library_rounded,
-                    label: 'Gallery',
-                    onTap: () async {
-                      Navigator.pop(sheetContext);
-                      // Wait for bottom sheet to fully close before opening picker
-                      await Future.delayed(const Duration(milliseconds: 400));
-                      if (mounted) _pickImage(index);
-                    },
+    // If image already exists, show options. Otherwise go directly to gallery.
+    if (_images[index] != null) {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: const Color(0xFF2D1F3D),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (sheetContext) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  _ImageSourceOption(
-                    icon: Icons.camera_alt_rounded,
-                    label: 'Camera',
-                    onTap: () async {
-                      Navigator.pop(sheetContext);
-                      await Future.delayed(const Duration(milliseconds: 400));
-                      if (mounted) _pickImageFromCamera(index);
-                    },
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Change Photo',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                  if (_images[index] != null)
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _ImageSourceOption(
+                      icon: Icons.photo_library_rounded,
+                      label: 'Gallery',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (mounted) _pickImage(index);
+                        });
+                      },
+                    ),
+                    _ImageSourceOption(
+                      icon: Icons.camera_alt_rounded,
+                      label: 'Camera',
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (mounted) _pickImageFromCamera(index);
+                        });
+                      },
+                    ),
                     _ImageSourceOption(
                       icon: Icons.delete_rounded,
                       label: 'Remove',
@@ -223,14 +225,18 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                         });
                       },
                     ),
-                ],
-              ),
-              const SizedBox(height: 16),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      // No image yet — open gallery directly (no bottom sheet)
+      _pickImage(index);
+    }
   }
 
   Future<void> _saveCollage() async {
