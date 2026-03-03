@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/gradient_background.dart';
+import '../collage/collage_editor_screen.dart';
 
 class TemplatesScreen extends StatefulWidget {
   const TemplatesScreen({super.key});
@@ -399,6 +400,17 @@ class _TemplatesScreenState extends State<TemplatesScreen>
   }
 
   void _showTemplateSelected(TemplateItem template) {
+    // If the template has a photoCount, it's a collage template - navigate to editor
+    if (template.photoCount != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CollageEditorScreen(template: template),
+        ),
+      );
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
