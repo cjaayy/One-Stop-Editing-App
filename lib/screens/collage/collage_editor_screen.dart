@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +25,6 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   late Animation<double> _fadeAnimation;
 
   final GlobalKey _collageKey = GlobalKey();
-  final ImagePicker _imagePicker = ImagePicker();
 
   late List<File?> _images;
   double _spacing = 4.0;
@@ -52,7 +51,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   void initState() {
     super.initState();
     final count = widget.template.photoCount ?? 2;
-    _images = List<File?>.filled(count, null);
+    _images = List<File?>.generate(count, (_) => null);
 
     _animationController = AnimationController(
       vsync: this,
@@ -71,20 +70,30 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   }
 
   Future<void> _pickImage(int index) async {
+    debugPrint('CollageEditor: _pickImage called for index $index');
     try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
+      final ImagePicker picker = ImagePicker();
+      debugPrint('CollageEditor: Opening gallery picker...');
+      final XFile? pickedFile = await picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 1920,
-        maxHeight: 1920,
-        imageQuality: 90,
       );
 
-      if (pickedFile != null) {
-        setState(() {
-          _images[index] = File(pickedFile.path);
-        });
+      debugPrint(
+          'CollageEditor: Picker returned: ${pickedFile?.path ?? 'null'}');
+      if (pickedFile != null && mounted) {
+        final file = File(pickedFile.path);
+        final exists = await file.exists();
+        debugPrint('CollageEditor: File exists: $exists');
+        if (exists) {
+          setState(() {
+            _images[index] = file;
+          });
+          debugPrint('CollageEditor: Image set successfully for slot $index');
+        }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('CollageEditor: Error picking image: $e');
+      debugPrint('CollageEditor: Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -107,20 +116,27 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   }
 
   Future<void> _pickImageFromCamera(int index) async {
+    debugPrint('CollageEditor: _pickImageFromCamera called for index $index');
     try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 1920,
-        maxHeight: 1920,
-        imageQuality: 90,
       );
 
-      if (pickedFile != null) {
-        setState(() {
-          _images[index] = File(pickedFile.path);
-        });
+      debugPrint(
+          'CollageEditor: Camera returned: ${pickedFile?.path ?? 'null'}');
+      if (pickedFile != null && mounted) {
+        final file = File(pickedFile.path);
+        final exists = await file.exists();
+        if (exists) {
+          setState(() {
+            _images[index] = file;
+          });
+        }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('CollageEditor: Error capturing image: $e');
+      debugPrint('CollageEditor: Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -149,7 +165,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -179,17 +195,20 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   _ImageSourceOption(
                     icon: Icons.photo_library_rounded,
                     label: 'Gallery',
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImage(index);
+                    onTap: () async {
+                      Navigator.pop(sheetContext);
+                      // Wait for bottom sheet to fully close before opening picker
+                      await Future.delayed(const Duration(milliseconds: 400));
+                      if (mounted) _pickImage(index);
                     },
                   ),
                   _ImageSourceOption(
                     icon: Icons.camera_alt_rounded,
                     label: 'Camera',
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImageFromCamera(index);
+                    onTap: () async {
+                      Navigator.pop(sheetContext);
+                      await Future.delayed(const Duration(milliseconds: 400));
+                      if (mounted) _pickImageFromCamera(index);
                     },
                   ),
                   if (_images[index] != null)
@@ -198,7 +217,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                       label: 'Remove',
                       color: Colors.red,
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pop(sheetContext);
                         setState(() {
                           _images[index] = null;
                         });
@@ -1240,21 +1259,23 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   }
 
   Future<void> _addAllImages() async {
+    debugPrint('CollageEditor: _addAllImages called');
     try {
-      final List<XFile> pickedFiles = await _imagePicker.pickMultiImage(
-        maxWidth: 1920,
-        maxHeight: 1920,
-        imageQuality: 90,
-      );
+      final ImagePicker picker = ImagePicker();
+      final List<XFile> pickedFiles = await picker.pickMultiImage();
 
-      if (pickedFiles.isNotEmpty) {
+      debugPrint(
+          'CollageEditor: Multi picker returned ${pickedFiles.length} files');
+      if (pickedFiles.isNotEmpty && mounted) {
         setState(() {
           for (int i = 0; i < pickedFiles.length && i < _images.length; i++) {
             _images[i] = File(pickedFiles[i].path);
           }
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('CollageEditor: Error picking multiple images: $e');
+      debugPrint('CollageEditor: Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
