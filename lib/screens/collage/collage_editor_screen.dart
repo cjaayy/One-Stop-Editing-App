@@ -31,7 +31,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
   late List<File?> _images;
   double _spacing = 4.0;
   double _borderRadius = 8.0;
+  double _margin = 0.0;
   Color _backgroundColor = Colors.white;
+  Color _marginColor = Colors.white;
   bool _isSaving = false;
 
   final List<Color> _backgroundOptions = [
@@ -596,12 +598,18 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
           aspectRatio: aspectRatio,
           child: Container(
             decoration: BoxDecoration(
-              color: _backgroundColor,
+              color: _marginColor,
               borderRadius: BorderRadius.circular(_borderRadius),
             ),
+            padding: EdgeInsets.all(_margin),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(_borderRadius),
-              child: _buildCollageLayout(),
+              borderRadius: BorderRadius.circular(
+                (_borderRadius - _margin).clamp(0, double.infinity),
+              ),
+              child: Container(
+                color: _backgroundColor,
+                child: _buildCollageLayout(),
+              ),
             ),
           ),
         ),
@@ -997,6 +1005,127 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
           ),
         ),
         const SizedBox(height: 12),
+
+        // Margin Slider
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.border_outer_rounded,
+                      color: Color(0xFFE91E63), size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Margin',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${_margin.toInt()}px',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+              Slider(
+                value: _margin,
+                min: 0,
+                max: 30,
+                divisions: 30,
+                activeColor: const Color(0xFFE91E63),
+                inactiveColor: Colors.white.withOpacity(0.1),
+                onChanged: (value) {
+                  setState(() => _margin = value);
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Margin Color
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.format_color_fill_rounded,
+                      color: Color(0xFFE91E63), size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Margin Color',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 40,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _backgroundOptions.length,
+                  itemBuilder: (context, index) {
+                    final color = _backgroundOptions[index];
+                    final isSelected = color.value == _marginColor.value;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() => _marginColor = color);
+                      },
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFFE91E63)
+                                : Colors.white.withOpacity(0.2),
+                            width: isSelected ? 3 : 1,
+                          ),
+                        ),
+                        child: isSelected
+                            ? Icon(
+                                Icons.check,
+                                size: 18,
+                                color: color == Colors.white
+                                    ? Colors.black
+                                    : Colors.white,
+                              )
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
 
         // Spacing Slider
         Container(
