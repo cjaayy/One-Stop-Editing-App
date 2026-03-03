@@ -7,13 +7,18 @@ echo.
 :: Change to the project root directory (parent of scripts folder)
 cd /d "%~dp0.."
 
-:: Check for connected physical devices (exclude emulators and web)
+:: Check for connected physical devices
 echo Checking for connected physical devices...
-flutter devices | findstr /V /C:"emulator" /V /C:"chrome" /V /C:"edge" /V /C:"web" > devices_temp.txt
 
-:: Check if we found any physical devices
-findstr /C:"android" devices_temp.txt > nul
-if %errorlevel% neq 0 (
+:: Get the device ID of a connected Android physical device
+set "DEVICE_ID="
+for /f "tokens=2 delims=•" %%a in ('flutter devices ^| findstr /I /C:"android-arm"') do (
+    for /f "tokens=1" %%b in ("%%a") do (
+        set "DEVICE_ID=%%b"
+    )
+)
+
+if "%DEVICE_ID%"=="" (
     echo.
     echo ============================================
     echo ERROR: No physical device detected!
@@ -26,21 +31,17 @@ if %errorlevel% neq 0 (
     echo.
     echo To check connected devices, run: flutter devices
     echo.
-    del devices_temp.txt
     pause
     exit /b 1
 )
 
-:: Clean up temp file
-del devices_temp.txt
-
-echo Physical device detected!
+echo Physical device detected! (ID: %DEVICE_ID%)
 echo.
 
-:: Run the app on the physical device
+:: Run the app on the specific physical device
 echo Running Flutter app on physical device...
 echo.
-call flutter run
+call flutter run -d %DEVICE_ID%
 
 pause
 
