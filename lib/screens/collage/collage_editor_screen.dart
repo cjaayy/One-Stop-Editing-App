@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -278,42 +279,34 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
 
       final Uint8List pngBytes = byteData.buffer.asUint8List();
 
-      // Save to app documents directory
-      final directory = await getApplicationDocumentsDirectory();
-      final collageDir = Directory('${directory.path}/collages');
-      if (!await collageDir.exists()) {
-        await collageDir.create(recursive: true);
-      }
-
+      // Save to a temp file first
+      final directory = await getTemporaryDirectory();
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final filePath = '${collageDir.path}/collage_$timestamp.png';
+      final filePath = '${directory.path}/collage_$timestamp.png';
       final file = File(filePath);
       await file.writeAsBytes(pngBytes);
 
-      // Also try saving to Pictures directory for easier access
-      try {
-        final externalDirs = await getExternalStorageDirectories();
-        if (externalDirs != null && externalDirs.isNotEmpty) {
-          // Navigate up from app-specific dir to shared storage
-          final String externalPath = externalDirs.first.path;
-          final parts = externalPath.split('/');
-          final androidIndex = parts.indexOf('Android');
-          if (androidIndex > 0) {
-            final basePath = parts.sublist(0, androidIndex).join('/');
-            final picturesDir = Directory('$basePath/Pictures/OneStopEditor');
-            if (!await picturesDir.exists()) {
-              await picturesDir.create(recursive: true);
-            }
-            final galleryPath = '${picturesDir.path}/collage_$timestamp.png';
-            await file.copy(galleryPath);
-          }
+      // Check for gallery access permission
+      final hasAccess = await Gal.hasAccess(toAlbum: true);
+      if (!hasAccess) {
+        final granted = await Gal.requestAccess(toAlbum: true);
+        if (!granted) {
+          throw Exception(
+              'Gallery access denied. Please grant permission in Settings.');
         }
-      } catch (_) {
-        // Fallback: file is still saved in app documents
       }
 
+      // Save to device gallery using Gal (uses MediaStore on Android)
+      await Gal.putImage(filePath, album: 'OneStopEditor');
+      debugPrint('CollageEditor: Saved to gallery successfully');
+
+      // Clean up temp file
+      try {
+        await file.delete();
+      } catch (_) {}
+
       if (mounted) {
-        _showSaveSuccessDialog(filePath);
+        _showSaveSuccessDialog('Saved to Gallery / OneStopEditor album');
       }
     } catch (e) {
       if (mounted) {
@@ -359,7 +352,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Your collage has been saved successfully!',
+              'Your collage has been saved to your gallery!',
               style: TextStyle(color: Colors.white70),
             ),
             const SizedBox(height: 12),
@@ -371,11 +364,12 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.folder, color: Color(0xFFE91E63), size: 18),
+                  const Icon(Icons.photo_library_rounded,
+                      color: Color(0xFFE91E63), size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      filePath.split('/').last,
+                      filePath,
                       style: const TextStyle(
                         color: Colors.white60,
                         fontSize: 12,
