@@ -63,15 +63,15 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               type: TemplateType.photo,
             ),
             TemplateItem(
-              name: 'Heart Collage',
-              preview: Icons.favorite_rounded,
+              name: '5 Photo Split',
+              preview: Icons.view_agenda_rounded,
               aspectRatio: '1:1',
               photoCount: 5,
               type: TemplateType.photo,
             ),
             TemplateItem(
-              name: 'Circle Collage',
-              preview: Icons.circle_outlined,
+              name: '7 Photo Mosaic',
+              preview: Icons.view_quilt_rounded,
               aspectRatio: '1:1',
               photoCount: 7,
               type: TemplateType.photo,
@@ -696,11 +696,13 @@ class _TemplateCard extends StatelessWidget {
                       ),
                     ),
                     child: Center(
-                      child: Icon(
-                        template.preview,
-                        size: 48,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
+                      child: template.photoCount != null
+                          ? _buildCollageLayoutIcon(template)
+                          : Icon(
+                              template.preview,
+                              size: 48,
+                              color: Colors.white.withOpacity(0.8),
+                            ),
                     ),
                   ),
                   // Type Badge
@@ -820,6 +822,266 @@ class _TemplateCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCollageLayoutIcon(TemplateItem template) {
+    final color = Colors.white.withOpacity(0.75);
+    const gap = 2.0;
+    const size = 52.0;
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: _buildLayoutForCount(template.photoCount!, color, gap),
+    );
+  }
+
+  Widget _buildLayoutForCount(int count, Color color, double gap) {
+    switch (count) {
+      case 2:
+        // Two vertical panels side by side
+        return Row(
+          children: [
+            Expanded(child: _cell(color)),
+            SizedBox(width: gap),
+            Expanded(child: _cell(color)),
+          ],
+        );
+      case 3:
+        // One large left, two stacked right
+        return Row(
+          children: [
+            Expanded(flex: 2, child: _cell(color)),
+            SizedBox(width: gap),
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(height: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+          ],
+        );
+      case 4:
+        // 2x2 grid
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+          ],
+        );
+      case 5:
+        // 2 top (taller) + 3 bottom (shorter) — matches _buildFivePhotoLayout
+        return Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+          ],
+        );
+      case 6:
+        // 1 wide+1 narrow / 3 equal / 1 full — matches _buildSixPhotoLayout
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(flex: 2, child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: _cell(color),
+            ),
+          ],
+        );
+      case 7:
+        // 3 top + 2 middle + 2 bottom
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+          ],
+        );
+      case 8:
+        // 3 top + 3 middle + 2 bottom
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+          ],
+        );
+      case 9:
+        // 3x3 grid
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+            SizedBox(height: gap),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                  SizedBox(width: gap),
+                  Expanded(child: _cell(color)),
+                ],
+              ),
+            ),
+          ],
+        );
+      default:
+        return Icon(
+          Icons.grid_view_rounded,
+          size: 48,
+          color: color,
+        );
+    }
+  }
+
+  Widget _cell(Color color) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(3),
       ),
     );
   }
