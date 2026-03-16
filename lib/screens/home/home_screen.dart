@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/logo_widget.dart';
-import '../auth/login_screen.dart';
+import '../auth/signup_screen.dart';
 import '../templates/templates_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -82,7 +82,11 @@ class _HomeScreenState extends State<HomeScreen>
                         const SizedBox(height: 20),
 
                         // Welcome Section
-                        _buildWelcomeSection(user?.name ?? 'User'),
+                        _buildWelcomeSection(
+                          authProvider.isAuthenticated
+                              ? (user?.name ?? 'User')
+                              : 'Guest',
+                        ),
 
                         const SizedBox(height: 30),
 
@@ -113,6 +117,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildAppBar(AuthProvider authProvider) {
+    final isLoggedIn = authProvider.isAuthenticated;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -141,24 +147,51 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () => _showLogoutDialog(authProvider),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
+              if (isLoggedIn)
+                GestureDetector(
+                  onTap: () => _showLogoutDialog(authProvider),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    child: const Icon(
+                      Icons.logout_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.logout_rounded,
-                    color: Colors.white,
-                    size: 22,
+                )
+              else
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SignupScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.person_add_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ],
@@ -167,11 +200,14 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildWelcomeSection(String name) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final isLoggedIn = authProvider.isAuthenticated;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Welcome back,',
+          isLoggedIn ? 'Welcome back,' : 'Welcome,',
           style: TextStyle(
             color: Colors.white.withOpacity(0.7),
             fontSize: 16,
@@ -194,6 +230,48 @@ class _HomeScreenState extends State<HomeScreen>
             fontSize: 14,
           ),
         ),
+        if (!isLoggedIn) ...[
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignupScreen(),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE91E63).withOpacity(0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xFFE91E63).withOpacity(0.3),
+                ),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.person_add_rounded,
+                    color: Color(0xFFE91E63),
+                    size: 16,
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    'Sign up to save your work',
+                    style: TextStyle(
+                      color: Color(0xFFE91E63),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -389,14 +467,8 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           ElevatedButton(
             onPressed: () async {
-              final navigator = Navigator.of(context);
-              navigator.pop();
+              Navigator.pop(context);
               await authProvider.signOut();
-              if (mounted) {
-                navigator.pushReplacement(
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                );
-              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFE91E63),

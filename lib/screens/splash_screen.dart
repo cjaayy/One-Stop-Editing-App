@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/logo_widget.dart';
-import 'auth/signup_screen.dart';
 import 'home/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,26 +14,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate();
+    _navigateToHome();
   }
 
-  Future<void> _checkAuthAndNavigate() async {
+  Future<void> _navigateToHome() async {
     await Future.delayed(const Duration(seconds: 3));
 
     if (!mounted) return;
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    // Navigate based on auth state
-    Widget nextScreen;
-    if (authProvider.isAuthenticated) {
-      nextScreen = const HomeScreen();
-    } else {
-      nextScreen = const SignupScreen();
-    }
-
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => nextScreen),
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
   }
 
