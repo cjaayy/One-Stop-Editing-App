@@ -404,21 +404,22 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                 Column(
                   children: [
                     _buildAppBar(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                      child: _buildTemplateInfo(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _buildCollagePreview(),
+                    ),
+                    const SizedBox(height: 12),
                     Expanded(
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Template info
-                            _buildTemplateInfo(),
-                            const SizedBox(height: 16),
-
-                            // Collage Preview
-                            _buildCollagePreview(),
-                            const SizedBox(height: 20),
-
                             // Customization Options
                             _buildCustomizationSection(),
                             const SizedBox(height: 20),

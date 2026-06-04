@@ -92,6 +92,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               preview: Icons.crop_square_rounded,
               aspectRatio: '1:1',
               description: '1080 x 1080',
+              photoCount: 1,
               type: TemplateType.photo,
             ),
             TemplateItem(
@@ -99,6 +100,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               preview: Icons.crop_portrait_rounded,
               aspectRatio: '4:5',
               description: '1080 x 1350',
+              photoCount: 1,
               type: TemplateType.photo,
             ),
             TemplateItem(
@@ -106,6 +108,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               preview: Icons.crop_landscape_rounded,
               aspectRatio: '1.91:1',
               description: '1080 x 566',
+              photoCount: 1,
               type: TemplateType.photo,
             ),
             TemplateItem(
@@ -113,6 +116,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               preview: Icons.view_carousel_rounded,
               aspectRatio: '1:1',
               description: 'Multi-slide',
+              photoCount: 3,
               type: TemplateType.photo,
             ),
           ],
@@ -400,12 +404,24 @@ class _TemplatesScreenState extends State<TemplatesScreen>
   }
 
   void _showTemplateSelected(TemplateItem template) {
-    // If the template has a photoCount, it's a collage template - navigate to editor
-    if (template.photoCount != null) {
+    // Route all photo templates to the collage editor.
+    // Non-collage templates use a single-photo layout based on the chosen aspect ratio.
+    if (template.type == TemplateType.photo) {
+      final editorTemplate = template.photoCount != null
+          ? template
+          : TemplateItem(
+              name: template.name,
+              preview: template.preview,
+              aspectRatio: template.aspectRatio,
+              description: template.description,
+              photoCount: 1,
+              type: template.type,
+            );
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CollageEditorScreen(template: template),
+          builder: (context) => CollageEditorScreen(template: editorTemplate),
         ),
       );
       return;
