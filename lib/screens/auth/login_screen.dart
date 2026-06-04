@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.2),
+                color: Colors.red.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.error_outline, color: Colors.redAccent),
@@ -270,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen>
         Text(
           'Sign in to continue editing',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.65),
+            color: Colors.white.withValues(alpha: 0.65),
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
@@ -332,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen>
                   border: Border.all(
                     color: _rememberMe
                         ? const Color(0xFFE91E63)
-                        : Colors.white.withOpacity(0.4),
+                        : Colors.white.withValues(alpha: 0.4),
                     width: 2,
                   ),
                 ),
@@ -344,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen>
               Text(
                 'Remember me',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -388,7 +388,7 @@ class _LoginScreenState extends State<LoginScreen>
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  Colors.white.withOpacity(0.3),
+                  Colors.white.withValues(alpha: 0.3),
                 ],
               ),
             ),
@@ -399,7 +399,7 @@ class _LoginScreenState extends State<LoginScreen>
           child: Text(
             'OR',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               fontSize: 13,
               fontWeight: FontWeight.w500,
               letterSpacing: 1,
@@ -412,7 +412,7 @@ class _LoginScreenState extends State<LoginScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(0.3),
+                  Colors.white.withValues(alpha: 0.3),
                   Colors.transparent,
                 ],
               ),
@@ -469,9 +469,9 @@ class _LoginScreenState extends State<LoginScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: RichText(
             text: TextSpan(
@@ -479,7 +479,7 @@ class _LoginScreenState extends State<LoginScreen>
               children: [
                 TextSpan(
                   text: "Don't have an account? ",
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
                 ),
                 const TextSpan(
                   text: 'Sign up',

@@ -243,9 +243,9 @@ class _SignupScreenState extends State<SignupScreen>
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.2)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
         ),
         child: const Icon(
           Icons.arrow_back_ios_new,
@@ -277,7 +277,7 @@ class _SignupScreenState extends State<SignupScreen>
         Text(
           'Join us and start editing like a pro',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
@@ -367,7 +367,7 @@ class _SignupScreenState extends State<SignupScreen>
               border: Border.all(
                 color: _agreeToTerms
                     ? const Color(0xFFE91E63)
-                    : Colors.white.withOpacity(0.5),
+                    : Colors.white.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
@@ -380,7 +380,7 @@ class _SignupScreenState extends State<SignupScreen>
             child: RichText(
               text: TextSpan(
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 13,
                   height: 1.4,
                 ),
@@ -432,7 +432,7 @@ class _SignupScreenState extends State<SignupScreen>
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  Colors.white.withOpacity(0.3),
+                  Colors.white.withValues(alpha: 0.3),
                 ],
               ),
             ),
@@ -443,7 +443,7 @@ class _SignupScreenState extends State<SignupScreen>
           child: Text(
             'OR',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               fontSize: 13,
               fontWeight: FontWeight.w500,
               letterSpacing: 1,
@@ -456,7 +456,7 @@ class _SignupScreenState extends State<SignupScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(0.3),
+                  Colors.white.withValues(alpha: 0.3),
                   Colors.transparent,
                 ],
               ),
@@ -513,9 +513,9 @@ class _SignupScreenState extends State<SignupScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: RichText(
             text: TextSpan(
@@ -523,7 +523,7 @@ class _SignupScreenState extends State<SignupScreen>
               children: [
                 TextSpan(
                   text: 'Already have an account? ',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
                 ),
                 const TextSpan(
                   text: 'Log in',

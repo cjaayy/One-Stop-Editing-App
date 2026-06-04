@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen>
                 icon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
@@ -209,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen>
         Text(
           isLoggedIn ? 'Welcome back,' : 'Welcome,',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             fontSize: 16,
           ),
         ),
@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen>
         Text(
           'What would you like to create today?',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             fontSize: 14,
           ),
         ),
@@ -244,10 +244,10 @@ class _HomeScreenState extends State<HomeScreen>
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
               decoration: BoxDecoration(
-                color: const Color(0xFFE91E63).withOpacity(0.15),
+                color: const Color(0xFFE91E63).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: const Color(0xFFE91E63).withOpacity(0.3),
+                  color: const Color(0xFFE91E63).withValues(alpha: 0.3),
                 ),
               ),
               child: const Row(
@@ -386,10 +386,10 @@ class _HomeScreenState extends State<HomeScreen>
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -397,13 +397,13 @@ class _HomeScreenState extends State<HomeScreen>
               Icon(
                 Icons.folder_open_rounded,
                 size: 48,
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 12),
               Text(
                 'No recent projects',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -412,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen>
               Text(
                 'Your recent edits will appear here',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
+                  color: Colors.white.withValues(alpha: 0.4),
                   fontSize: 13,
                 ),
               ),
@@ -462,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen>
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
             ),
           ),
           ElevatedButton(
@@ -514,7 +514,7 @@ class _MainActionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: gradient[0].withOpacity(0.4),
+              color: gradient[0].withValues(alpha: 0.4),
               blurRadius: 15,
               offset: const Offset(0, 8),
             ),
@@ -529,7 +529,7 @@ class _MainActionCard extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 100,
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
               ),
             ),
             // Content
@@ -541,7 +541,7 @@ class _MainActionCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -563,7 +563,7 @@ class _MainActionCard extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 13,
                     ),
                   ),
@@ -598,10 +598,10 @@ class _QuickActionButton extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
               ),
             ),
             child: Icon(
@@ -614,7 +614,7 @@ class _QuickActionButton extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

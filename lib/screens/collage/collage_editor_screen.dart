@@ -181,7 +181,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -355,7 +355,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -452,7 +452,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -512,9 +512,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -549,7 +549,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                 Text(
                   'Aspect ratio: ${widget.template.aspectRatio}',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.6),
+                    color: Colors.white.withValues(alpha: 0.6),
                     fontSize: 13,
                   ),
                 ),
@@ -565,7 +565,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
               children: [
                 CircularProgressIndicator(
                   value: filledCount / totalCount,
-                  backgroundColor: Colors.white.withOpacity(0.1),
+                  backgroundColor: Colors.white.withValues(alpha: 0.1),
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     Color(0xFFE91E63),
                   ),
@@ -886,7 +886,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
       onTap: () => _showImageSourcePicker(index),
       child: Container(
         decoration: BoxDecoration(
-          color: image == null ? Colors.grey.withOpacity(0.2) : null,
+          color: image == null ? Colors.grey.withValues(alpha: 0.2) : null,
         ),
         child: image != null
             ? Image.file(
@@ -902,13 +902,13 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                     Icon(
                       Icons.add_photo_alternate_rounded,
                       size: 32,
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       '${index + 1}',
                       style: TextStyle(
-                        color: Colors.grey.withOpacity(0.5),
+                        color: Colors.grey.withValues(alpha: 0.5),
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -938,9 +938,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -953,7 +953,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     'Background Color',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -968,7 +968,8 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   itemCount: _backgroundOptions.length,
                   itemBuilder: (context, index) {
                     final color = _backgroundOptions[index];
-                    final isSelected = color.value == _backgroundColor.value;
+                    final isSelected =
+                        color.toARGB32() == _backgroundColor.toARGB32();
                     return GestureDetector(
                       onTap: () {
                         setState(() => _backgroundColor = color);
@@ -983,7 +984,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                           border: Border.all(
                             color: isSelected
                                 ? const Color(0xFFE91E63)
-                                : Colors.white.withOpacity(0.2),
+                                : Colors.white.withValues(alpha: 0.2),
                             width: isSelected ? 3 : 1,
                           ),
                         ),
@@ -1010,9 +1011,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1025,7 +1026,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     'Margin',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1034,7 +1035,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     '${_margin.toInt()}px',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontSize: 12,
                     ),
                   ),
@@ -1046,7 +1047,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                 max: 30,
                 divisions: 30,
                 activeColor: const Color(0xFFE91E63),
-                inactiveColor: Colors.white.withOpacity(0.1),
+                inactiveColor: Colors.white.withValues(alpha: 0.1),
                 onChanged: (value) {
                   setState(() => _margin = value);
                 },
@@ -1060,9 +1061,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1075,7 +1076,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     'Margin Color',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1090,7 +1091,8 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   itemCount: _backgroundOptions.length,
                   itemBuilder: (context, index) {
                     final color = _backgroundOptions[index];
-                    final isSelected = color.value == _marginColor.value;
+                    final isSelected =
+                        color.toARGB32() == _marginColor.toARGB32();
                     return GestureDetector(
                       onTap: () {
                         setState(() => _marginColor = color);
@@ -1105,7 +1107,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                           border: Border.all(
                             color: isSelected
                                 ? const Color(0xFFE91E63)
-                                : Colors.white.withOpacity(0.2),
+                                : Colors.white.withValues(alpha: 0.2),
                             width: isSelected ? 3 : 1,
                           ),
                         ),
@@ -1131,9 +1133,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1146,7 +1148,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     'Spacing',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1155,7 +1157,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     '${_spacing.toInt()}px',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontSize: 12,
                     ),
                   ),
@@ -1167,7 +1169,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                 max: 20,
                 divisions: 20,
                 activeColor: const Color(0xFFE91E63),
-                inactiveColor: Colors.white.withOpacity(0.1),
+                inactiveColor: Colors.white.withValues(alpha: 0.1),
                 onChanged: (value) {
                   setState(() => _spacing = value);
                 },
@@ -1181,9 +1183,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1196,7 +1198,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     'Corner Radius',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1205,7 +1207,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   Text(
                     '${_borderRadius.toInt()}px',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontSize: 12,
                     ),
                   ),
@@ -1217,7 +1219,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                 max: 30,
                 divisions: 30,
                 activeColor: const Color(0xFFE91E63),
-                inactiveColor: Colors.white.withOpacity(0.1),
+                inactiveColor: Colors.white.withValues(alpha: 0.1),
                 onChanged: (value) {
                   setState(() => _borderRadius = value);
                 },
@@ -1289,9 +1291,9 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -1299,7 +1301,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: image != null ? null : Colors.white.withOpacity(0.1),
+            color: image != null ? null : Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
             image: image != null
                 ? DecorationImage(
@@ -1313,7 +1315,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   child: Text(
                     '${index + 1}',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -1323,7 +1325,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         title: Text(
           image != null ? 'Photo ${index + 1}' : 'Empty Slot ${index + 1}',
           style: TextStyle(
-            color: Colors.white.withOpacity(image != null ? 1 : 0.5),
+            color: Colors.white.withValues(alpha: image != null ? 1 : 0.5),
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -1331,7 +1333,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
         subtitle: Text(
           image != null ? 'Tap to change' : 'Tap to add photo',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha: 0.4),
             fontSize: 12,
           ),
         ),
@@ -1347,7 +1349,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.2),
+                    color: Colors.red.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
@@ -1364,7 +1366,7 @@ class _CollageEditorScreenState extends State<CollageEditorScreen>
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE91E63).withOpacity(0.2),
+                  color: const Color(0xFFE91E63).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -1471,7 +1473,7 @@ class _ImageSourceOption extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: displayColor.withOpacity(0.15),
+              color: displayColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(

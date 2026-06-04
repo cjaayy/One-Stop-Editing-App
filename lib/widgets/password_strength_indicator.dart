@@ -95,7 +95,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: index < filledBars
                         ? color
-                        : Colors.white.withOpacity(0.2),
+                        : Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -148,10 +148,10 @@ class PasswordRequirements extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.08),
+          color: Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
           ),
         ),
         child: Column(
@@ -214,7 +214,7 @@ class _RequirementRow extends StatelessWidget {
               border: Border.all(
                 color: isMet
                     ? Colors.green.shade400
-                    : Colors.white.withOpacity(0.3),
+                    : Colors.white.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),

@@ -477,7 +477,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -506,7 +506,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -547,11 +547,11 @@ class _TemplatesScreenState extends State<TemplatesScreen>
                         colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
                       )
                     : null,
-                color: isSelected ? null : Colors.white.withOpacity(0.1),
+                color: isSelected ? null : Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(25),
                 border: isSelected
                     ? null
-                    : Border.all(color: Colors.white.withOpacity(0.2)),
+                    : Border.all(color: Colors.white.withValues(alpha: 0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -616,7 +616,7 @@ class _TemplatesScreenState extends State<TemplatesScreen>
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                     ),
                   ),
                 ],
@@ -662,10 +662,10 @@ class _TemplateCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.08),
+          color: Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
           ),
         ),
         child: Column(
@@ -681,12 +681,12 @@ class _TemplateCard extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: template.type == TemplateType.video
                             ? [
-                                const Color(0xFF9C27B0).withOpacity(0.4),
-                                const Color(0xFF673AB7).withOpacity(0.4),
+                                const Color(0xFF9C27B0).withValues(alpha: 0.4),
+                                const Color(0xFF673AB7).withValues(alpha: 0.4),
                               ]
                             : [
-                                const Color(0xFFE91E63).withOpacity(0.3),
-                                const Color(0xFF9C27B0).withOpacity(0.3),
+                                const Color(0xFFE91E63).withValues(alpha: 0.3),
+                                const Color(0xFF9C27B0).withValues(alpha: 0.3),
                               ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -701,7 +701,7 @@ class _TemplateCard extends StatelessWidget {
                           : Icon(
                               template.preview,
                               size: 48,
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                             ),
                     ),
                   ),
@@ -773,7 +773,7 @@ class _TemplateCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE91E63).withOpacity(0.3),
+                          color: const Color(0xFFE91E63).withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -791,7 +791,7 @@ class _TemplateCard extends StatelessWidget {
                           child: Text(
                             template.description!,
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
+                              color: Colors.white.withValues(alpha: 0.5),
                               fontSize: 11,
                             ),
                             maxLines: 1,
@@ -804,13 +804,13 @@ class _TemplateCard extends StatelessWidget {
                         Icon(
                           Icons.photo_library_rounded,
                           size: 12,
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                         ),
                         const SizedBox(width: 4),
                         Text(
                           '${template.photoCount}',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 11,
                           ),
                         ),
@@ -827,7 +827,7 @@ class _TemplateCard extends StatelessWidget {
   }
 
   Widget _buildCollageLayoutIcon(TemplateItem template) {
-    final color = Colors.white.withOpacity(0.75);
+    final color = Colors.white.withValues(alpha: 0.75);
     const gap = 2.0;
     const size = 52.0;
 
