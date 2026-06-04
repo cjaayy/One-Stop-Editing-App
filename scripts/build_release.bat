@@ -7,6 +7,11 @@ echo.
 :: Change to the project root directory (parent of scripts folder)
 cd /d "%~dp0.."
 
+:: Stop any stale Gradle daemons before building
+echo Stopping existing Gradle daemons...
+call android\gradlew.bat --stop > nul 2>&1
+echo.
+
 :: Clean previous builds
 echo Cleaning previous builds...
 call flutter clean

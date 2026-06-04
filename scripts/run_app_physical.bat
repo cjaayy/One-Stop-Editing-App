@@ -7,6 +7,11 @@ echo.
 :: Change to the project root directory (parent of scripts folder)
 cd /d "%~dp0.."
 
+:: Stop any stale Gradle daemons before starting a new build
+echo Stopping existing Gradle daemons...
+call android\gradlew.bat --stop > nul 2>&1
+echo.
+
 :: Check for connected physical devices
 echo Checking for connected physical devices...
 

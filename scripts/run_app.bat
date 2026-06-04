@@ -7,6 +7,11 @@ echo.
 :: Change to the project root directory (parent of scripts folder)
 cd /d "%~dp0.."
 
+:: Stop any stale Gradle daemons before starting a new build
+echo Stopping existing Gradle daemons...
+call android\gradlew.bat --stop > nul 2>&1
+echo.
+
 :: Check if Android emulator is already running (look for android-x64)
 flutter devices | findstr /C:"android-x64" > nul
 if %errorlevel%==0 (
