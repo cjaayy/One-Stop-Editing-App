@@ -18,16 +18,18 @@ echo 2. Build Release APK
 echo 3. Build Release App Bundle (AAB)
 echo 4. Build Both (Debug APK + Release AAB)
 echo 5. Run app on connected device (debug)
-echo 6. Exit
+echo 6. Wireless ADB setup
+echo 7. Exit
 echo.
-set /p choice="Enter your choice (1-6): "
+set /p choice="Enter your choice (1-7): "
 
 if "%choice%"=="1" goto DEBUG_APK
 if "%choice%"=="2" goto RELEASE_APK
 if "%choice%"=="3" goto RELEASE_AAB
 if "%choice%"=="4" goto BOTH
 if "%choice%"=="5" goto RUN_DEVICE
-if "%choice%"=="6" goto END
+if "%choice%"=="6" goto WIRELESS_SETUP
+if "%choice%"=="7" goto END
 echo Invalid choice! Exiting.
 goto END
 
@@ -89,7 +91,13 @@ goto END
 :RUN_DEVICE
 echo.
 echo Running Flutter app on connected device (debug)...
-call flutter run
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_device.ps1"
+goto END
+
+:WIRELESS_SETUP
+echo.
+echo Opening wireless ADB setup...
+call "%~dp0wireless_device.bat"
 goto END
 
 :END
