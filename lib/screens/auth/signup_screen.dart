@@ -180,52 +180,76 @@ class _SignupScreenState extends State<SignupScreen>
 
                               const SizedBox(height: 24),
 
-                              // Form fields
-                              _buildNameField(),
-                              const SizedBox(height: 16),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.07),
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.12),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.18),
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 12),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Form fields
+                                    _buildNameField(),
+                                    const SizedBox(height: 14),
 
-                              _buildEmailField(),
-                              const SizedBox(height: 16),
+                                    _buildEmailField(),
+                                    const SizedBox(height: 14),
 
-                              _buildPasswordField(),
+                                    _buildPasswordField(),
 
-                              // Password strength indicator
-                              PasswordStrengthIndicator(
-                                  password: _currentPassword),
+                                    // Password strength indicator
+                                    PasswordStrengthIndicator(
+                                        password: _currentPassword),
 
-                              // Password requirements
-                              if (_currentPassword.isNotEmpty)
-                                PasswordRequirements(
-                                    password: _currentPassword),
+                                    // Password requirements
+                                    if (_currentPassword.isNotEmpty)
+                                      PasswordRequirements(
+                                          password: _currentPassword),
 
-                              const SizedBox(height: 16),
+                                    const SizedBox(height: 14),
 
-                              _buildConfirmPasswordField(),
+                                    _buildConfirmPasswordField(),
 
-                              const SizedBox(height: 20),
+                                    const SizedBox(height: 18),
 
-                              // Terms and conditions
-                              _buildTermsCheckbox(),
+                                    // Terms and conditions
+                                    _buildTermsCheckbox(),
 
-                              const SizedBox(height: 20),
+                                    const SizedBox(height: 18),
 
-                              // Sign up button
-                              _buildSignUpButton(authProvider),
+                                    // Sign up button
+                                    _buildSignUpButton(authProvider),
 
-                              const SizedBox(height: 16),
+                                    const SizedBox(height: 14),
 
-                              // Divider
-                              _buildDivider(),
+                                    // Divider
+                                    _buildDivider(),
 
-                              const SizedBox(height: 16),
+                                    const SizedBox(height: 14),
 
-                              // Social sign up buttons
-                              _buildSocialButtons(),
+                                    // Social sign up buttons
+                                    _buildSocialButtons(),
 
-                              const SizedBox(height: 20),
+                                    const SizedBox(height: 18),
 
-                              // Login link
-                              _buildLoginLink(),
+                                    // Login link
+                                    _buildLoginLink(),
+                                  ],
+                                ),
+                              ),
 
                               const SizedBox(height: 24),
                             ],
