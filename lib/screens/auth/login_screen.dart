@@ -205,38 +205,62 @@ class _LoginScreenState extends State<LoginScreen>
 
                               const SizedBox(height: 24),
 
-                              // Email field
-                              _buildEmailField(),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.07),
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.12),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.18),
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 12),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Email field
+                                    _buildEmailField(),
 
-                              const SizedBox(height: 16),
+                                    const SizedBox(height: 16),
 
-                              // Password field
-                              _buildPasswordField(),
+                                    // Password field
+                                    _buildPasswordField(),
 
-                              const SizedBox(height: 12),
+                                    const SizedBox(height: 12),
 
-                              // Remember me & Forgot password row
-                              _buildOptionsRow(),
+                                    // Remember me & Forgot password row
+                                    _buildOptionsRow(),
 
-                              const SizedBox(height: 20),
+                                    const SizedBox(height: 20),
 
-                              // Login button
-                              _buildLoginButton(authProvider),
+                                    // Login button
+                                    _buildLoginButton(authProvider),
 
-                              const SizedBox(height: 16),
+                                    const SizedBox(height: 16),
 
-                              // Divider
-                              _buildDivider(),
+                                    // Divider
+                                    _buildDivider(),
 
-                              const SizedBox(height: 16),
+                                    const SizedBox(height: 16),
 
-                              // Social login buttons
-                              _buildSocialButtons(),
+                                    // Social login buttons
+                                    _buildSocialButtons(),
 
-                              const SizedBox(height: 20),
+                                    const SizedBox(height: 20),
 
-                              // Sign up link
-                              _buildSignUpLink(),
+                                    // Sign up link
+                                    _buildSignUpLink(),
+                                  ],
+                                ),
+                              ),
 
                               const SizedBox(height: 20),
                             ],
