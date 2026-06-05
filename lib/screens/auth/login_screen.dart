@@ -188,55 +188,60 @@ class _LoginScreenState extends State<LoginScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Form(
                   key: _formKey,
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: SlideTransition(
-                      position: _slideAnimation,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 40),
+                  child: Center(
+                    child: SizedBox(
+                      width: 380,
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 20),
 
-                          // Header section
-                          _buildHeader(),
+                              // Header section
+                              _buildHeader(),
 
-                          const SizedBox(height: 50),
+                              const SizedBox(height: 24),
 
-                          // Email field
-                          _buildEmailField(),
+                              // Email field
+                              _buildEmailField(),
 
-                          const SizedBox(height: 24),
+                              const SizedBox(height: 16),
 
-                          // Password field
-                          _buildPasswordField(),
+                              // Password field
+                              _buildPasswordField(),
 
-                          const SizedBox(height: 16),
+                              const SizedBox(height: 12),
 
-                          // Remember me & Forgot password row
-                          _buildOptionsRow(),
+                              // Remember me & Forgot password row
+                              _buildOptionsRow(),
 
-                          const SizedBox(height: 36),
+                              const SizedBox(height: 20),
 
-                          // Login button
-                          _buildLoginButton(authProvider),
+                              // Login button
+                              _buildLoginButton(authProvider),
 
-                          const SizedBox(height: 28),
+                              const SizedBox(height: 16),
 
-                          // Divider
-                          _buildDivider(),
+                              // Divider
+                              _buildDivider(),
 
-                          const SizedBox(height: 28),
+                              const SizedBox(height: 16),
 
-                          // Social login buttons
-                          _buildSocialButtons(),
+                              // Social login buttons
+                              _buildSocialButtons(),
 
-                          const SizedBox(height: 40),
+                              const SizedBox(height: 20),
 
-                          // Sign up link
-                          _buildSignUpLink(),
+                              // Sign up link
+                              _buildSignUpLink(),
 
-                          const SizedBox(height: 40),
-                        ],
+                              const SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -254,24 +259,24 @@ class _LoginScreenState extends State<LoginScreen>
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // One Stop Editing Logo
-        const Center(child: LogoWidget(fontSize: 22, iconSize: 55)),
-        const SizedBox(height: 40),
+        const Center(child: LogoWidget(fontSize: 20, iconSize: 48)),
+        const SizedBox(height: 24),
         // Welcome text
         const Text(
           'Welcome Back!',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+            letterSpacing: 0.4,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
           'Sign in to continue editing',
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.65),
-            fontSize: 15,
+            fontSize: 13,
             fontWeight: FontWeight.w400,
           ),
         ),

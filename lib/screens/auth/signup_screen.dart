@@ -158,72 +158,79 @@ class _SignupScreenState extends State<SignupScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Form(
                   key: _formKey,
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: SlideTransition(
-                      position: _slideAnimation,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
+                  child: Center(
+                    child: SizedBox(
+                      width: 380,
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
 
-                          // Back button
-                          _buildBackButton(),
+                              // Back button
+                              _buildBackButton(),
 
-                          const SizedBox(height: 20),
+                              const SizedBox(height: 12),
 
-                          // Header section
-                          _buildHeader(),
+                              // Header section
+                              _buildHeader(),
 
-                          const SizedBox(height: 40),
+                              const SizedBox(height: 24),
 
-                          // Form fields
-                          _buildNameField(),
-                          const SizedBox(height: 24),
+                              // Form fields
+                              _buildNameField(),
+                              const SizedBox(height: 16),
 
-                          _buildEmailField(),
-                          const SizedBox(height: 24),
+                              _buildEmailField(),
+                              const SizedBox(height: 16),
 
-                          _buildPasswordField(),
+                              _buildPasswordField(),
 
-                          // Password strength indicator
-                          PasswordStrengthIndicator(password: _currentPassword),
+                              // Password strength indicator
+                              PasswordStrengthIndicator(
+                                  password: _currentPassword),
 
-                          // Password requirements
-                          if (_currentPassword.isNotEmpty)
-                            PasswordRequirements(password: _currentPassword),
+                              // Password requirements
+                              if (_currentPassword.isNotEmpty)
+                                PasswordRequirements(
+                                    password: _currentPassword),
 
-                          const SizedBox(height: 24),
+                              const SizedBox(height: 16),
 
-                          _buildConfirmPasswordField(),
+                              _buildConfirmPasswordField(),
 
-                          const SizedBox(height: 28),
+                              const SizedBox(height: 20),
 
-                          // Terms and conditions
-                          _buildTermsCheckbox(),
+                              // Terms and conditions
+                              _buildTermsCheckbox(),
 
-                          const SizedBox(height: 32),
+                              const SizedBox(height: 20),
 
-                          // Sign up button
-                          _buildSignUpButton(authProvider),
+                              // Sign up button
+                              _buildSignUpButton(authProvider),
 
-                          const SizedBox(height: 24),
+                              const SizedBox(height: 16),
 
-                          // Divider
-                          _buildDivider(),
+                              // Divider
+                              _buildDivider(),
 
-                          const SizedBox(height: 24),
+                              const SizedBox(height: 16),
 
-                          // Social sign up buttons
-                          _buildSocialButtons(),
+                              // Social sign up buttons
+                              _buildSocialButtons(),
 
-                          const SizedBox(height: 32),
+                              const SizedBox(height: 20),
 
-                          // Login link
-                          _buildLoginLink(),
+                              // Login link
+                              _buildLoginLink(),
 
-                          const SizedBox(height: 40),
-                        ],
+                              const SizedBox(height: 24),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -261,24 +268,24 @@ class _SignupScreenState extends State<SignupScreen>
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // One Stop Editing Logo
-        const Center(child: LogoWidget(fontSize: 22, iconSize: 55)),
-        const SizedBox(height: 40),
+        const Center(child: LogoWidget(fontSize: 20, iconSize: 48)),
+        const SizedBox(height: 24),
         // Create Account text
         const Text(
           'Create Account',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+            letterSpacing: 0.4,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
-          'Join us and start editing like a pro',
+          'Join us and start editing',
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.7),
-            fontSize: 15,
+            fontSize: 13,
             fontWeight: FontWeight.w400,
           ),
         ),
