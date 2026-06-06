@@ -15,14 +15,23 @@ void main() async {
   // Load local .env (if present) before initializing Supabase.
   // If you prefer dart-define, that's still supported.
   try {
-    await dotenv.load();
+    await dotenv.load(fileName: '.env', isOptional: true);
   } catch (error) {
-    debugPrint('No .env file found; continuing with fallback values: $error');
+    debugPrint('Unable to load .env; continuing with fallback values: $error');
+  }
+
+  final supabaseUrl = SupabaseConfig.url;
+  final supabaseAnonKey = SupabaseConfig.anonKey;
+
+  if (supabaseUrl.contains('YOUR_PROJECT.supabase.co') ||
+      supabaseAnonKey.contains('YOUR_SUPABASE_ANON_KEY')) {
+    debugPrint(
+        'Supabase credentials are not configured. Signup will fail until .env or dart-define values are provided.');
   }
 
   await Supabase.initialize(
-    url: SupabaseConfig.url,
-    publishableKey: SupabaseConfig.anonKey,
+    url: supabaseUrl,
+    publishableKey: supabaseAnonKey,
   );
 
   runApp(const MyApp());

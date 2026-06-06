@@ -23,6 +23,14 @@ class AuthProvider with ChangeNotifier {
       _supabaseUser != null && _supabaseUser!.emailConfirmedAt != null;
 
   AuthProvider() {
+    try {
+      if (!Supabase.instance.isInitialized) {
+        return;
+      }
+    } catch (_) {
+      return;
+    }
+
     _authService.authStateChanges.listen((User? user) async {
       _supabaseUser = user;
       if (user != null && user.emailConfirmedAt != null) {

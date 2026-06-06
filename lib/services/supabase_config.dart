@@ -35,6 +35,16 @@ class SupabaseConfig {
     );
   }
 
+  static bool get hasValidCredentials {
+    final urlValue = url;
+    final keyValue = anonKey;
+
+    return urlValue.contains('supabase.co') &&
+        !urlValue.contains('YOUR_PROJECT.supabase.co') &&
+        keyValue.isNotEmpty &&
+        !keyValue.contains('YOUR_SUPABASE_ANON_KEY');
+  }
+
   static List<String> get adminEmails {
     try {
       if (dotenv.isInitialized) {

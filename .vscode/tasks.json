@@ -37,6 +37,18 @@
 			"command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d M2003J15SC --verbose > C:\\temp\\flutter_run_fixed.log 2>&1",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "search error log",
+			"type": "shell",
+			"command": "cmd /d /c \"findstr /I /N /C:Unhandled /C:Exception /C:NotInitializedError /C:SupabaseConfig /C:AuthException C:\\temp\\flutter_run_fixed.log\"",
+			"isBackground": false
+		},
+		{
+			"label": "adb logcat filter",
+			"type": "shell",
+			"command": "cmd /d /c \"C:\\Users\\mjhay\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe -s 192.168.1.2:37593 logcat -d | findstr /I /C:Exception /C:NotInitializedError /C:SupabaseConfig /C:AuthException /C:Unhandled\"",
+			"isBackground": false
 		}
 	]
 }
