@@ -34,4 +34,33 @@ class SupabaseConfig {
       defaultValue: 'YOUR_SUPABASE_ANON_KEY',
     );
   }
+
+  static List<String> get adminEmails {
+    try {
+      if (dotenv.isInitialized) {
+        final fromDotenv = dotenv.env['ADMIN_EMAILS'];
+        if (fromDotenv != null && fromDotenv.isNotEmpty) {
+          return fromDotenv
+              .split(',')
+              .map((value) => value.trim())
+              .where((value) => value.isNotEmpty)
+              .toList();
+        }
+      }
+    } catch (error) {
+      debugPrint(
+          'SupabaseConfig.adminEmails fallback due to dotenv error: $error');
+    }
+
+    final configured = const String.fromEnvironment(
+      'ADMIN_EMAILS',
+      defaultValue: '',
+    );
+
+    return configured
+        .split(',')
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList();
+  }
 }

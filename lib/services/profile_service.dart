@@ -35,6 +35,19 @@ class ProfileService {
     }
   }
 
+  Future<bool> hasAdminUser() async {
+    try {
+      final data = await _client
+          .from('profiles')
+          .select('uid')
+          .eq('is_admin', true)
+          .limit(1);
+      return data.isNotEmpty;
+    } catch (e) {
+      throw Exception('Failed to check admin user: $e');
+    }
+  }
+
   Future<void> updateEmailVerificationStatus(String uid, bool verified) async {
     try {
       await _client.from('profiles').update({

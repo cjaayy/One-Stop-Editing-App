@@ -4,6 +4,7 @@ import '../models/user_model.dart';
 import '../models/auth_result.dart';
 import '../services/auth_service.dart';
 import '../services/profile_service.dart';
+import '../services/supabase_config.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -43,6 +44,7 @@ class AuthProvider with ChangeNotifier {
                 (email.contains('@') ? email.split('@').first : 'User'))
             .toString();
 
+        final shouldBeAdmin = await _shouldGrantAdmin(email);
         _userModel = UserModel(
           uid: uid,
           name: name,
@@ -50,17 +52,24 @@ class AuthProvider with ChangeNotifier {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           emailVerified: _supabaseUser!.emailConfirmedAt != null,
-          isAdmin: false,
+          isAdmin: shouldBeAdmin,
         );
         await _profileService.createUserDocument(_userModel!);
       }
 
       if (_userModel != null && _supabaseUser != null) {
         final confirmed = _supabaseUser!.emailConfirmedAt != null;
-        if (_userModel!.emailVerified != confirmed) {
-          await _profileService.updateEmailVerificationStatus(uid, confirmed);
+        final shouldBeAdmin = _isAdminEmail(_supabaseUser!.email ?? '');
+
+        if (_userModel!.emailVerified != confirmed ||
+            _userModel!.isAdmin != shouldBeAdmin) {
+          await _profileService.updateUserDocument(uid, {
+            'email_verified': confirmed,
+            'is_admin': shouldBeAdmin,
+          });
           _userModel = _userModel!.copyWith(
             emailVerified: confirmed,
+            isAdmin: shouldBeAdmin,
             updatedAt: DateTime.now(),
           );
         }
@@ -92,17 +101,29 @@ class AuthProvider with ChangeNotifier {
 
         if (userId != null && currentUser != null) {
           final isConfirmed = currentUser.emailConfirmedAt != null;
-          UserModel newUser = UserModel(
+          final normalizedEmail = (currentUser.email ?? email).toLowerCase();
+          final shouldBeAdmin = await _shouldGrantAdmin(normalizedEmail);
+          final newUser = UserModel(
             uid: userId,
             name: name,
-            email: email,
+            email: normalizedEmail,
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
             emailVerified: isConfirmed,
-            isAdmin: false,
+            isAdmin: shouldBeAdmin,
           );
 
-          await _profileService.createUserDocument(newUser);
+          try {
+            // Only attempt profile creation when a real session exists.
+            // Email-confirmation signups may not have a session yet, and
+            // RLS can block this write at that stage.
+            if (Supabase.instance.client.auth.currentSession != null) {
+              await _profileService.createUserDocument(newUser);
+            }
+          } catch (e) {
+            debugPrint('Profile creation skipped during signup: $e');
+          }
+
           await _authService.signOut();
         }
       }
@@ -180,6 +201,25 @@ class AuthProvider with ChangeNotifier {
   void _setError(String message) {
     _errorMessage = message;
     notifyListeners();
+  }
+
+  bool _isAdminEmail(String email) {
+    final configuredAdmins = SupabaseConfig.adminEmails;
+    if (configuredAdmins.isEmpty) return false;
+
+    final normalizedEmail = email.trim().toLowerCase();
+    return configuredAdmins
+        .any((admin) => admin.trim().toLowerCase() == normalizedEmail);
+  }
+
+  Future<bool> _shouldGrantAdmin(String email) async {
+    if (_isAdminEmail(email)) return true;
+
+    try {
+      return !(await _profileService.hasAdminUser());
+    } catch (_) {
+      return false;
+    }
   }
 
   void _clearError() {
