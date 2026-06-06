@@ -85,76 +85,6 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.camera_alt_rounded,
       sections: [
         TemplateSection(
-          name: 'Photo',
-          templates: [
-            TemplateItem(
-              name: 'Square Post',
-              preview: Icons.crop_square_rounded,
-              aspectRatio: '1:1',
-              description: '1080 x 1080',
-              photoCount: 1,
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Portrait Post',
-              preview: Icons.crop_portrait_rounded,
-              aspectRatio: '4:5',
-              description: '1080 x 1350',
-              photoCount: 1,
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Landscape Post',
-              preview: Icons.crop_landscape_rounded,
-              aspectRatio: '1.91:1',
-              description: '1080 x 566',
-              photoCount: 1,
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Carousel',
-              preview: Icons.view_carousel_rounded,
-              aspectRatio: '1:1',
-              description: 'Multi-slide',
-              photoCount: 3,
-              type: TemplateType.photo,
-            ),
-          ],
-        ),
-        TemplateSection(
-          name: 'Video',
-          templates: [
-            TemplateItem(
-              name: 'Reel',
-              preview: Icons.play_circle_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Story Video',
-              preview: Icons.smartphone_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Feed Video',
-              preview: Icons.videocam_rounded,
-              aspectRatio: '1:1',
-              description: '1080 x 1080',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'IGTV',
-              preview: Icons.tv_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-          ],
-        ),
-        TemplateSection(
           name: 'Collage',
           templates: [
             TemplateItem(
@@ -186,72 +116,6 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       name: 'Facebook',
       icon: Icons.facebook_rounded,
       sections: [
-        TemplateSection(
-          name: 'Photo',
-          templates: [
-            TemplateItem(
-              name: 'Post Image',
-              preview: Icons.image_rounded,
-              aspectRatio: '1.91:1',
-              description: '1200 x 630',
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Cover Photo',
-              preview: Icons.panorama_rounded,
-              aspectRatio: '2.7:1',
-              description: '820 x 312',
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Profile Picture',
-              preview: Icons.account_circle_rounded,
-              aspectRatio: '1:1',
-              description: '170 x 170',
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Event Cover',
-              preview: Icons.event_rounded,
-              aspectRatio: '1.91:1',
-              description: '1920 x 1005',
-              type: TemplateType.photo,
-            ),
-          ],
-        ),
-        TemplateSection(
-          name: 'Video',
-          templates: [
-            TemplateItem(
-              name: 'Story Video',
-              preview: Icons.smartphone_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Feed Video',
-              preview: Icons.videocam_rounded,
-              aspectRatio: '16:9',
-              description: '1280 x 720',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Reel',
-              preview: Icons.play_circle_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Ad Video',
-              preview: Icons.ads_click_rounded,
-              aspectRatio: '1:1',
-              description: '1080 x 1080',
-              type: TemplateType.video,
-            ),
-          ],
-        ),
         TemplateSection(
           name: 'Collage',
           templates: [
@@ -285,47 +149,14 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.play_circle_filled_rounded,
       sections: [
         TemplateSection(
-          name: 'Photo',
+          name: 'Collage',
           templates: [
             TemplateItem(
-              name: 'Thumbnail',
-              preview: Icons.ondemand_video_rounded,
+              name: 'YouTube Collage',
+              preview: Icons.grid_view_rounded,
               aspectRatio: '16:9',
-              description: '1280 x 720',
+              photoCount: 4,
               type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Channel Banner',
-              preview: Icons.panorama_wide_angle_rounded,
-              aspectRatio: '6.2:1',
-              description: '2560 x 1440',
-              type: TemplateType.photo,
-            ),
-          ],
-        ),
-        TemplateSection(
-          name: 'Video',
-          templates: [
-            TemplateItem(
-              name: 'End Screen',
-              preview: Icons.stop_screen_share_rounded,
-              aspectRatio: '16:9',
-              description: '1920 x 1080',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Shorts',
-              preview: Icons.smartphone_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Standard Video',
-              preview: Icons.videocam_rounded,
-              aspectRatio: '16:9',
-              description: '1920 x 1080',
-              type: TemplateType.video,
             ),
           ],
         ),
@@ -336,47 +167,14 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.music_note_rounded,
       sections: [
         TemplateSection(
-          name: 'Photo',
+          name: 'Collage',
           templates: [
             TemplateItem(
-              name: 'Profile Photo',
-              preview: Icons.account_circle_rounded,
-              aspectRatio: '1:1',
-              description: '200 x 200',
+              name: 'TikTok Collage',
+              preview: Icons.auto_awesome_mosaic_rounded,
+              aspectRatio: '9:16',
+              photoCount: 3,
               type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Photo Post',
-              preview: Icons.image_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.photo,
-            ),
-          ],
-        ),
-        TemplateSection(
-          name: 'Video',
-          templates: [
-            TemplateItem(
-              name: 'TikTok Video',
-              preview: Icons.smartphone_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Duet',
-              preview: Icons.people_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
-            ),
-            TemplateItem(
-              name: 'Stitch',
-              preview: Icons.content_cut_rounded,
-              aspectRatio: '9:16',
-              description: '1080 x 1920',
-              type: TemplateType.video,
             ),
           ],
         ),
