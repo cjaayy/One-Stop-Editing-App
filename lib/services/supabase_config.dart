@@ -52,7 +52,7 @@ class SupabaseConfig {
           'SupabaseConfig.adminEmails fallback due to dotenv error: $error');
     }
 
-    final configured = const String.fromEnvironment(
+    const configured = String.fromEnvironment(
       'ADMIN_EMAILS',
       defaultValue: '',
     );
