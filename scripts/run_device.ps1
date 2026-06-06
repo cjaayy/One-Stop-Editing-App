@@ -18,6 +18,15 @@ foreach ($device in $flutterDevices) {
     }
 }
 
+$launchableDevices = @()
+foreach ($device in $supportedDevices) {
+    if ($device.id -match '_adb-tls-connect\._tcp') {
+        continue
+    }
+
+    $launchableDevices += $device
+}
+
 $adb = 'C:\Users\mjhay\AppData\Local\Android\Sdk\platform-tools\adb.exe'
 $wirelessDeviceLines = @()
 if (Test-Path $adb) {
@@ -40,9 +49,9 @@ if ($wirelessDeviceLines.Count -gt 0) {
     Write-Host ''
 }
 
-if ($supportedDevices.Count -gt 0) {
-    if ($supportedDevices.Count -eq 1) {
-        $device = $supportedDevices | Select-Object -First 1
+if ($launchableDevices.Count -gt 0) {
+    if ($launchableDevices.Count -eq 1) {
+        $device = $launchableDevices | Select-Object -First 1
         Write-Host ''
         Write-Host ('Running on {0} ({1})...' -f $device.name, $device.id)
         & flutter run -d $device.id
@@ -51,8 +60,8 @@ if ($supportedDevices.Count -gt 0) {
 
     Write-Host ''
     Write-Host 'Available supported devices:'
-    for ($i = 0; $i -lt $supportedDevices.Count; $i++) {
-        $device = $supportedDevices[$i]
+    for ($i = 0; $i -lt $launchableDevices.Count; $i++) {
+        $device = $launchableDevices[$i]
         Write-Host ('[{0}] {1} ({2})' -f ($i + 1), $device.name, $device.id)
     }
 
@@ -67,16 +76,22 @@ if ($supportedDevices.Count -gt 0) {
     }
 
     $index = [int]$selection - 1
-    if ($index -lt 0 -or $index -ge $supportedDevices.Count) {
+    if ($index -lt 0 -or $index -ge $launchableDevices.Count) {
         Write-Host 'Invalid selection.'
         exit 1
     }
 
-    $device = $supportedDevices[$index]
+    $device = $launchableDevices[$index]
     Write-Host ''
     Write-Host ('Running on {0} ({1})...' -f $device.name, $device.id)
     & flutter run -d $device.id
     exit $LASTEXITCODE
+}
+
+if ($wirelessDeviceLines.Count -gt 0) {
+    Write-Host 'Wireless devices were detected, but this launcher skips them because app install is blocked on this setup.'
+    Write-Host 'Use USB, or enable the device-side USB install/debugging permissions before trying again.'
+    exit 1
 }
 
 Write-Host 'No supported Flutter devices were found.'

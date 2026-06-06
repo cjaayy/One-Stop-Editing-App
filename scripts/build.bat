@@ -49,6 +49,16 @@ if %errorlevel%==0 (
 	echo APK Build Successful!
 	echo Location: build\app\outputs\flutter-apk\app-release.apk
 	echo.
+	echo Installing release APK to the connected device...
+	call flutter install build\app\outputs\flutter-apk\app-release.apk
+	if %errorlevel%==0 (
+		echo.
+		echo APK installed successfully.
+	) else (
+		echo.
+		echo APK install failed! Check the device connection and any prompts on the phone.
+	)
+	echo.
 	explorer "build\app\outputs\flutter-apk"
 ) else (
 	echo.

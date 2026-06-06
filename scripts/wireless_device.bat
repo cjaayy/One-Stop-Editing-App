@@ -58,6 +58,10 @@ echo Flutter devices:
 flutter devices
 
 echo.
+echo Note: some Xiaomi / MIUI / HyperOS devices block APK installation over wireless ADB.
+echo If flutter run later fails with INSTALL_FAILED_USER_RESTRICTED, enable Install via USB
+echo and USB debugging (Security settings) on the phone, or connect it by USB instead.
+echo.
 set /p RUN_NOW=Run flutter app on this wireless device now? (y/n): 
 if /i "%RUN_NOW%"=="y" (
     echo.
