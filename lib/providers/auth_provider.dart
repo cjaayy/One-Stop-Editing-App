@@ -1,34 +1,31 @@
 import 'package:flutter/foundation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_model.dart';
 import '../models/auth_result.dart';
 import '../services/auth_service.dart';
-import '../services/firestore_service.dart';
+import '../services/profile_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
-  final FirestoreService _firestoreService = FirestoreService();
+  final ProfileService _profileService = ProfileService();
 
-  User? _firebaseUser;
+  User? _supabaseUser;
   UserModel? _userModel;
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
-  User? get firebaseUser => _firebaseUser;
+  User? get currentUser => _supabaseUser;
   UserModel? get userModel => _userModel;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated =>
-      _firebaseUser != null && _firebaseUser!.emailVerified;
+      _supabaseUser != null && _supabaseUser!.emailConfirmedAt != null;
 
   AuthProvider() {
-    // Listen to auth state changes
     _authService.authStateChanges.listen((User? user) async {
-      _firebaseUser = user;
-      if (user != null && user.emailVerified) {
-        // Load user document from Firestore
-        await _loadUserDocument(user.uid);
+      _supabaseUser = user;
+      if (user != null && user.emailConfirmedAt != null) {
+        await _loadUserDocument(user.id);
       } else {
         _userModel = null;
       }
@@ -36,20 +33,34 @@ class AuthProvider with ChangeNotifier {
     });
   }
 
-  // Load user document from Firestore
   Future<void> _loadUserDocument(String uid) async {
     try {
-      _userModel = await _firestoreService.getUserDocument(uid);
+      _userModel = await _profileService.getUserDocument(uid);
 
-      // Sync email verification status
-      if (_userModel != null && _firebaseUser != null) {
-        if (_userModel!.emailVerified != _firebaseUser!.emailVerified) {
-          await _firestoreService.updateEmailVerificationStatus(
-            uid,
-            _firebaseUser!.emailVerified,
-          );
+      if (_userModel == null && _supabaseUser != null) {
+        final email = _supabaseUser!.email ?? '';
+        final name = (_supabaseUser!.userMetadata?['name'] ??
+                (email.contains('@') ? email.split('@').first : 'User'))
+            .toString();
+
+        _userModel = UserModel(
+          uid: uid,
+          name: name,
+          email: email,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          emailVerified: _supabaseUser!.emailConfirmedAt != null,
+          isAdmin: false,
+        );
+        await _profileService.createUserDocument(_userModel!);
+      }
+
+      if (_userModel != null && _supabaseUser != null) {
+        final confirmed = _supabaseUser!.emailConfirmedAt != null;
+        if (_userModel!.emailVerified != confirmed) {
+          await _profileService.updateEmailVerificationStatus(uid, confirmed);
           _userModel = _userModel!.copyWith(
-            emailVerified: _firebaseUser!.emailVerified,
+            emailVerified: confirmed,
             updatedAt: DateTime.now(),
           );
         }
@@ -69,28 +80,31 @@ class AuthProvider with ChangeNotifier {
     _clearError();
 
     try {
-      // Create Firebase Auth account
       AuthResult result = await _authService.signUpWithEmail(
         email: email,
         password: password,
         name: name,
       );
 
-      if (result.success && result.userId != null) {
-        // Create Firestore user document (user is still authenticated here)
-        UserModel newUser = UserModel(
-          uid: result.userId!,
-          name: name,
-          email: email,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          emailVerified: false,
-        );
+      if (result.success) {
+        final currentUser = _authService.currentUser;
+        final userId = result.userId ?? currentUser?.id;
 
-        await _firestoreService.createUserDocument(newUser);
+        if (userId != null && currentUser != null) {
+          final isConfirmed = currentUser.emailConfirmedAt != null;
+          UserModel newUser = UserModel(
+            uid: userId,
+            name: name,
+            email: email,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            emailVerified: isConfirmed,
+            isAdmin: false,
+          );
 
-        // NOW sign out after Firestore write is complete
-        await _authService.signOut();
+          await _profileService.createUserDocument(newUser);
+          await _authService.signOut();
+        }
       }
 
       _setLoading(false);
@@ -153,7 +167,7 @@ class AuthProvider with ChangeNotifier {
     _setLoading(true);
     await _authService.signOut();
     _userModel = null;
-    _firebaseUser = null;
+    _supabaseUser = null;
     _setLoading(false);
   }
 

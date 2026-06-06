@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/gradient_background.dart';
+import '../../models/admin_template_model.dart';
+import '../../services/template_service.dart';
 import '../collage/collage_editor_screen.dart';
 
 class TemplatesScreen extends StatefulWidget {
@@ -12,6 +14,7 @@ class TemplatesScreen extends StatefulWidget {
 class _TemplatesScreenState extends State<TemplatesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TemplateService _templateService = TemplateService();
   int _selectedCategoryIndex = 0;
 
   final List<TemplateCategory> _categories = [
@@ -251,31 +254,41 @@ class _TemplatesScreenState extends State<TemplatesScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF2D0A1C),
-      body: GradientBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              // App Bar
-              _buildAppBar(),
+    return StreamBuilder<List<AdminTemplateModel>>(
+      stream: _templateService.streamActiveTemplates(),
+      builder: (context, snapshot) {
+        final customTemplates = snapshot.data ?? const <AdminTemplateModel>[];
 
-              // Category Tabs
-              _buildCategoryTabs(),
+        return Scaffold(
+          backgroundColor: const Color(0xFF2D0A1C),
+          body: GradientBackground(
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // App Bar
+                  _buildAppBar(),
 
-              // Templates Grid
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: _categories.map((category) {
-                    return _buildTemplatesGrid(category);
-                  }).toList(),
-                ),
+                  // Category Tabs
+                  _buildCategoryTabs(),
+
+                  // Templates Grid
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: _categories.map((category) {
+                        return _buildTemplatesGrid(
+                          category,
+                          customTemplates,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -393,12 +406,17 @@ class _TemplatesScreenState extends State<TemplatesScreen>
     );
   }
 
-  Widget _buildTemplatesGrid(TemplateCategory category) {
+  Widget _buildTemplatesGrid(
+    TemplateCategory category,
+    List<AdminTemplateModel> customTemplates,
+  ) {
+    final sections = _buildSectionsForCategory(category, customTemplates);
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: category.sections.length,
+      itemCount: sections.length,
       itemBuilder: (context, sectionIndex) {
-        final section = category.sections[sectionIndex];
+        final section = sections[sectionIndex];
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -457,6 +475,55 @@ class _TemplatesScreenState extends State<TemplatesScreen>
           ],
         );
       },
+    );
+  }
+
+  List<TemplateSection> _buildSectionsForCategory(
+    TemplateCategory category,
+    List<AdminTemplateModel> customTemplates,
+  ) {
+    final sections = List<TemplateSection>.from(category.sections);
+    final customCategoryTemplates = customTemplates
+        .where((template) => template.category == category.name)
+        .toList();
+
+    if (customCategoryTemplates.isNotEmpty) {
+      final groupedTemplates = <String, List<TemplateItem>>{};
+
+      for (final template in customCategoryTemplates) {
+        groupedTemplates.putIfAbsent(template.sectionName, () => []);
+        groupedTemplates[template.sectionName]!
+            .add(_templateFromAdminTemplate(template));
+      }
+
+      sections.addAll(
+        groupedTemplates.entries.map(
+          (entry) => TemplateSection(
+            name: entry.key,
+            templates: entry.value,
+          ),
+        ),
+      );
+    }
+
+    return sections;
+  }
+
+  TemplateItem _templateFromAdminTemplate(AdminTemplateModel template) {
+    final previewIcon = template.iconCodePoint == 0
+        ? Icons.grid_view_rounded
+        : IconData(template.iconCodePoint, fontFamily: 'MaterialIcons');
+
+    return TemplateItem(
+      name: template.name,
+      preview: previewIcon,
+      aspectRatio: template.aspectRatio,
+      description: template.description,
+      photoCount:
+          template.templateType == 'photo' ? (template.photoCount ?? 1) : null,
+      type: template.templateType == 'video'
+          ? TemplateType.video
+          : TemplateType.photo,
     );
   }
 }

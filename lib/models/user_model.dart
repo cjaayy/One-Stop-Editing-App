@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class UserModel {
   final String uid;
   final String name;
@@ -7,6 +5,7 @@ class UserModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool emailVerified;
+  final bool isAdmin;
 
   UserModel({
     required this.uid,
@@ -15,36 +14,40 @@ class UserModel {
     required this.createdAt,
     required this.updatedAt,
     required this.emailVerified,
+    this.isAdmin = false,
   });
 
-  // Convert to Firestore document
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'name': name,
       'email': email,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'updatedAt': Timestamp.fromDate(updatedAt),
-      'emailVerified': emailVerified,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+      'email_verified': emailVerified,
+      'is_admin': isAdmin,
     };
   }
 
-  // Create from Firestore document
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      uid: map['uid'] ?? '',
-      name: map['name'] ?? '',
-      email: map['email'] ?? '',
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      updatedAt: (map['updatedAt'] as Timestamp).toDate(),
-      emailVerified: map['emailVerified'] ?? false,
+      uid: (map['uid'] ?? '') as String,
+      name: (map['name'] ?? '') as String,
+      email: (map['email'] ?? '') as String,
+      createdAt:
+          _parseDate(map['created_at'] ?? map['createdAt']) ?? DateTime.now(),
+      updatedAt:
+          _parseDate(map['updated_at'] ?? map['updatedAt']) ?? DateTime.now(),
+      emailVerified:
+          (map['email_verified'] ?? map['emailVerified'] ?? false) as bool,
+      isAdmin: (map['is_admin'] ?? map['isAdmin'] ?? false) as bool,
     );
   }
 
-  // Copy with method for updates
   UserModel copyWith({
     String? name,
     bool? emailVerified,
+    bool? isAdmin,
     DateTime? updatedAt,
   }) {
     return UserModel(
@@ -54,6 +57,17 @@ class UserModel {
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       emailVerified: emailVerified ?? this.emailVerified,
+      isAdmin: isAdmin ?? this.isAdmin,
     );
+  }
+
+  static DateTime? _parseDate(dynamic value) {
+    if (value is DateTime) {
+      return value;
+    }
+    if (value is String) {
+      return DateTime.tryParse(value);
+    }
+    return null;
   }
 }

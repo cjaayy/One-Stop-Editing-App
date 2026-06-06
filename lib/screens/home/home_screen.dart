@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/logo_widget.dart';
+import '../admin/admin_dashboard_screen.dart';
 import '../auth/signup_screen.dart';
 import '../templates/templates_screen.dart';
 
@@ -59,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final user = authProvider.userModel;
+    final isAdmin = user?.isAdmin ?? false;
 
     return Scaffold(
       backgroundColor: const Color(0xFF2D0A1C),
@@ -91,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen>
                         const SizedBox(height: 30),
 
                         // Main Action Buttons
-                        _buildMainActions(),
+                        _buildMainActions(isAdmin),
 
                         const SizedBox(height: 30),
                       ],
@@ -266,25 +268,51 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildMainActions() {
-    return Center(
-      child: SizedBox(
-        width: 360,
-        child: _MainActionCard(
-          icon: Icons.dashboard_customize_rounded,
-          title: 'Templates',
-          subtitle: 'Browse designs',
-          gradient: const [Color(0xFFE91E63), Color(0xFFFF5722)],
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const TemplatesScreen(),
-              ),
-            );
-          },
+  Widget _buildMainActions(bool isAdmin) {
+    return Column(
+      children: [
+        Center(
+          child: SizedBox(
+            width: 360,
+            child: _MainActionCard(
+              icon: Icons.dashboard_customize_rounded,
+              title: 'Templates',
+              subtitle: 'Browse designs',
+              gradient: const [Color(0xFFE91E63), Color(0xFFFF5722)],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TemplatesScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
-      ),
+        if (isAdmin) ...[
+          const SizedBox(height: 16),
+          Center(
+            child: SizedBox(
+              width: 360,
+              child: _MainActionCard(
+                icon: Icons.admin_panel_settings_rounded,
+                title: 'Admin Dashboard',
+                subtitle: 'Create user templates',
+                gradient: const [Color(0xFF673AB7), Color(0xFF9C27B0)],
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminDashboardScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
