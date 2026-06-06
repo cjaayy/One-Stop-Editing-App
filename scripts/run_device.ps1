@@ -1,3 +1,7 @@
+param(
+    [switch]$Release
+)
+
 $ErrorActionPreference = 'Stop'
 if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -Scope Global -ErrorAction SilentlyContinue) {
     $PSNativeCommandUseErrorActionPreference = $false
@@ -54,7 +58,11 @@ if ($launchableDevices.Count -gt 0) {
         $device = $launchableDevices | Select-Object -First 1
         Write-Host ''
         Write-Host ('Running on {0} ({1})...' -f $device.name, $device.id)
-        & flutter run -d $device.id
+        if ($Release) {
+            & flutter run --release -d $device.id
+        } else {
+            & flutter run -d $device.id
+        }
         exit $LASTEXITCODE
     }
 
@@ -84,7 +92,11 @@ if ($launchableDevices.Count -gt 0) {
     $device = $launchableDevices[$index]
     Write-Host ''
     Write-Host ('Running on {0} ({1})...' -f $device.name, $device.id)
-    & flutter run -d $device.id
+    if ($Release) {
+        & flutter run --release -d $device.id
+    } else {
+        & flutter run -d $device.id
+    }
     exit $LASTEXITCODE
 }
 
