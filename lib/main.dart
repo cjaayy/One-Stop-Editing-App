@@ -14,7 +14,11 @@ void main() async {
   // Initialize Supabase
   // Load local .env (if present) before initializing Supabase.
   // If you prefer dart-define, that's still supported.
-  await dotenv.load();
+  try {
+    await dotenv.load();
+  } catch (error) {
+    debugPrint('No .env file found; continuing with fallback values: $error');
+  }
 
   await Supabase.initialize(
     url: SupabaseConfig.url,
