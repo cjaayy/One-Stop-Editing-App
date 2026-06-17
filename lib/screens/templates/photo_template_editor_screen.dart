@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../models/app_template_model.dart';
 
@@ -24,9 +25,11 @@ class PhotoTemplateEditorScreen extends StatefulWidget {
 class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
   final GlobalKey _canvasKey = GlobalKey();
   final ImagePicker _picker = ImagePicker();
+  static const _galleryChannel = MethodChannel('com.onestopeditor/gallery');
 
   final Map<String, File> _selectedImages = {};
   final Map<String, String> _editedTexts = {};
+  bool _isSaving = false;
 
   Future<void> _pickImageForSlot(String elementId) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -46,21 +49,52 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
     final renderObject = _canvasKey.currentContext?.findRenderObject();
     if (renderObject == null || renderObject is! RenderRepaintBoundary) return;
 
-    final ui.Image image = await renderObject.toImage(pixelRatio: 3.0);
-    final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
-    if (byteData == null) return;
+    setState(() => _isSaving = true);
 
-    final Uint8List pngBytes = byteData.buffer.asUint8List();
+    try {
+      final ui.Image image = await renderObject.toImage(pixelRatio: 3.0);
+      final ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        throw Exception('Failed to capture image');
+      }
 
-    if (!mounted) return;
+      final Uint8List pngBytes = byteData.buffer.asUint8List();
+      final directory = await getTemporaryDirectory();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final filePath = '${directory.path}/template_photo_$timestamp.png';
+      final file = File(filePath);
+      await file.writeAsBytes(pngBytes);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Photo export is ready (${pngBytes.length} bytes)'),
-        backgroundColor: const Color(0xFF9C27B0),
-      ),
-    );
+      await _galleryChannel.invokeMethod('saveImageToGallery', {
+        'filePath': filePath,
+        'albumName': 'OneStopEditor',
+      });
+
+      try {
+        await file.delete();
+      } catch (_) {}
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Photo saved to your gallery'),
+          backgroundColor: Color(0xFF9C27B0),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to save photo: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
   }
 
   @override
@@ -68,7 +102,10 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
     final aspectRatio =
         widget.template.canvasWidth / widget.template.canvasHeight;
 
-    final elements = [...widget.template.elements]
+    final rawElements = widget.template.elements.isEmpty
+        ? _buildFallbackElements()
+        : widget.template.elements;
+    final elements = List<TemplateElement>.from(rawElements)
       ..sort((a, b) => a.zIndex.compareTo(b.zIndex));
 
     return Scaffold(
@@ -79,7 +116,7 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
         title: Text(widget.template.name),
         actions: [
           IconButton(
-            onPressed: _exportPhoto,
+            onPressed: _isSaving ? null : _exportPhoto,
             icon: const Icon(Icons.download_rounded),
           ),
         ],
@@ -116,6 +153,27 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
         ),
       ),
     );
+  }
+
+  List<TemplateElement> _buildFallbackElements() {
+    return const [
+      TemplateElement(
+        id: 'background',
+        type: 'background',
+        color: '#FFFFFF',
+        zIndex: 0,
+      ),
+      TemplateElement(
+        id: 'main-image',
+        type: 'imageSlot',
+        x: 0,
+        y: 0,
+        w: 1,
+        h: 1,
+        zIndex: 1,
+        radius: 0,
+      ),
+    ];
   }
 
   Widget _buildElement(TemplateElement element) {
