@@ -23,6 +23,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  bool _isSubmitting = false;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -81,6 +82,8 @@ class _SignupScreenState extends State<SignupScreen>
   }
 
   Future<void> _handleSignup() async {
+    if (_isSubmitting) return;
+
     if (!_formKey.currentState!.validate()) return;
 
     if (!_agreeToTerms) {
@@ -88,6 +91,8 @@ class _SignupScreenState extends State<SignupScreen>
           'Please agree to the Terms of Service and Privacy Policy');
       return;
     }
+
+    setState(() => _isSubmitting = true);
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
@@ -98,6 +103,8 @@ class _SignupScreenState extends State<SignupScreen>
     );
 
     if (!mounted) return;
+
+    setState(() => _isSubmitting = false);
 
     if (result.success) {
       Navigator.of(context).pushReplacement(
@@ -449,7 +456,8 @@ class _SignupScreenState extends State<SignupScreen>
     return GradientButton(
       text: 'Create Account',
       isLoading: authProvider.isLoading,
-      onPressed: authProvider.isLoading ? null : _handleSignup,
+      onPressed:
+          (authProvider.isLoading || _isSubmitting) ? null : _handleSignup,
     );
   }
 

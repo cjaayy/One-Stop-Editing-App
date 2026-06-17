@@ -22,8 +22,23 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   bool _isResending = false;
+  DateTime? _lastResendAt;
 
   Future<void> _resendEmail() async {
+    final now = DateTime.now();
+    if (_isResending) return;
+    if (_lastResendAt != null &&
+        now.difference(_lastResendAt!).inSeconds < 60) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Please wait 60 seconds before requesting another verification email.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     setState(() => _isResending = true);
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -32,6 +47,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       password: widget.password,
     );
 
+    _lastResendAt = DateTime.now();
     setState(() => _isResending = false);
 
     if (!mounted) return;
@@ -52,115 +68,123 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       backgroundColor: const Color(0xFF2D0A1C),
       body: GradientBackground(
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const LogoWidget(),
-                const SizedBox(height: 60),
-
-                // Email icon
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.email_outlined,
-                    size: 80,
-                    color: Colors.white,
-                  ),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 48,
                 ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const LogoWidget(),
+                    const SizedBox(height: 60),
 
-                const SizedBox(height: 30),
-
-                // Title
-                const Text(
-                  'Verify Your Email',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Message
-                Text(
-                  'We sent a verification email to:\n${widget.email}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                const Text(
-                  'Please check your inbox and click the verification link to activate your account.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // Resend button
-                OutlinedButton(
-                  onPressed: _isResending ? null : _resendEmail,
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.white, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                    // Email icon
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.email_outlined,
+                        size: 80,
+                        color: Colors.white,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 15,
+
+                    const SizedBox(height: 30),
+
+                    // Title
+                    const Text(
+                      'Verify Your Email',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  child: _isResending
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text(
-                          'Resend Verification Email',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+
+                    const SizedBox(height: 16),
+
+                    // Message
+                    Text(
+                      'We sent a verification email to:\n${widget.email}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    const Text(
+                      'Please check your inbox and click the verification link to activate your account.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Resend button
+                    OutlinedButton(
+                      onPressed: _isResending ? null : _resendEmail,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.white, width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Back to login
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                    );
-                  },
-                  child: const Text(
-                    'Back to Login',
-                    style: TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.underline,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 15,
+                        ),
+                      ),
+                      child: _isResending
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              'Resend Verification Email',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
                     ),
-                  ),
+
+                    const SizedBox(height: 20),
+
+                    // Back to login
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Back to Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -1,54 +1,52 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "flutter analyze",
-			"type": "shell",
-			"command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat analyze",
-			"isBackground": false,
-			"problemMatcher": [
-				"$flutter"
-			]
-		},
-		{
-			"label": "flutter devices",
-			"type": "shell",
-			"command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat devices",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "flutter run debug",
-			"type": "shell",
-			"command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d M2003J15SC --verbose",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "flutter run filtered",
-			"type": "shell",
-			"command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d M2003J15SC --verbose 2>&1 | findstr /I \"Unhandled Exception NotInitializedError SupabaseConfig\"",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "flutter run log file",
-			"type": "shell",
-			"command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d M2003J15SC --verbose > C:\\temp\\flutter_run_fixed.log 2>&1",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "search error log",
-			"type": "shell",
-			"command": "cmd /d /c \"findstr /I /N /C:Unhandled /C:Exception /C:NotInitializedError /C:SupabaseConfig /C:AuthException C:\\temp\\flutter_run_fixed.log\"",
-			"isBackground": false
-		},
-		{
-			"label": "adb logcat filter",
-			"type": "shell",
-			"command": "cmd /d /c \"C:\\Users\\mjhay\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe -s 192.168.1.2:37593 logcat -d | findstr /I /C:Exception /C:NotInitializedError /C:SupabaseConfig /C:AuthException /C:Unhandled\"",
-			"isBackground": false
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "flutter analyze",
+      "type": "shell",
+      "command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat analyze",
+      "isBackground": false,
+      "problemMatcher": ["$flutter"]
+    },
+    {
+      "label": "flutter devices",
+      "type": "shell",
+      "command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat devices",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter run debug",
+      "type": "shell",
+      "command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d 192.168.1.2:34697 --verbose",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter run filtered",
+      "type": "shell",
+      "command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d 192.168.1.2:34697 --verbose 2>&1 | findstr /I \"Unhandled Exception NotInitializedError SupabaseConfig\"",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter run log file",
+      "type": "shell",
+      "command": "set PATH=C:\\Windows\\System32;C:\\Program Files\\Git\\cmd;%PATH% && C:\\Users\\mjhay\\flutter\\bin\\flutter.bat run -d 192.168.1.2:34697 --verbose > C:\\temp\\flutter_run_fixed.log 2>&1",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "search error log",
+      "type": "shell",
+      "command": "cmd /d /c \"findstr /I /N /C:Unhandled /C:Exception /C:NotInitializedError /C:SupabaseConfig /C:AuthException C:\\temp\\flutter_run_fixed.log\"",
+      "isBackground": false
+    },
+    {
+      "label": "adb logcat filter",
+      "type": "shell",
+      "command": "cmd /d /c \"C:\\Users\\mjhay\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe -s 192.168.1.2:34697 logcat -d | findstr /I /C:Exception /C:NotInitializedError /C:SupabaseConfig /C:AuthException /C:Unhandled\"",
+      "isBackground": false
+    }
+  ]
 }

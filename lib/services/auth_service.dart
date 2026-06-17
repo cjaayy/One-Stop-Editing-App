@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/auth_result.dart';
+import 'supabase_config.dart';
 
 class AuthService {
   SupabaseClient get _client => Supabase.instance.client;
@@ -19,6 +20,7 @@ class AuthService {
         email: email,
         password: password,
         data: {'name': name},
+        emailRedirectTo: SupabaseConfig.redirectUrl,
       );
 
       return AuthResult.success(userId: response.user?.id);
@@ -75,6 +77,7 @@ class AuthService {
         await _client.auth.resend(
           type: OtpType.signup,
           email: email,
+          emailRedirectTo: SupabaseConfig.redirectUrl,
         );
         await _client.auth.signOut();
         return AuthResult.success();
@@ -95,7 +98,7 @@ class AuthService {
     await _client.auth.signOut();
   }
 
-  String _handleAuthException(AuthException e) {
+  String formatAuthExceptionMessage(AuthException e) {
     final message = e.message.toLowerCase();
 
     if (message.contains('password') && message.contains('weak')) {
@@ -115,12 +118,18 @@ class AuthService {
         message.contains('invalid login credentials')) {
       return 'Incorrect password.';
     }
-    if (message.contains('too many requests')) {
-      return 'Too many attempts. Please try again later.';
+    if (message.contains('rate limit') ||
+        message.contains('email rate limit') ||
+        message.contains('too many requests')) {
+      return 'Too many emails were sent too quickly. Please wait a few minutes before trying again.';
     }
     if (message.contains('network')) {
       return 'Network error. Please check your connection.';
     }
     return 'Authentication error: ${e.message}';
+  }
+
+  String _handleAuthException(AuthException e) {
+    return formatAuthExceptionMessage(e);
   }
 }
