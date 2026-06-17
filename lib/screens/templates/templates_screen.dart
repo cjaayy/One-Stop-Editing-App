@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../widgets/gradient_background.dart';
 import '../../models/admin_template_model.dart';
+import '../../models/app_template_model.dart';
 import '../../services/template_service.dart';
 import '../collage/collage_editor_screen.dart';
+import 'photo_template_editor_screen.dart';
+import 'video_template_editor_screen.dart';
 
 class TemplatesScreen extends StatefulWidget {
   const TemplatesScreen({super.key});
@@ -46,11 +49,6 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               photoCount: 4,
               type: TemplateType.photo,
             ),
-          ],
-        ),
-        TemplateSection(
-          name: 'Creative Layouts',
-          templates: [
             TemplateItem(
               name: '6 Photo Mosaic',
               preview: Icons.dashboard_rounded,
@@ -58,26 +56,82 @@ class _TemplatesScreenState extends State<TemplatesScreen>
               photoCount: 6,
               type: TemplateType.photo,
             ),
+          ],
+        ),
+        TemplateSection(
+          name: 'Story & Feed',
+          templates: [
             TemplateItem(
-              name: '9 Photo Grid',
-              preview: Icons.apps_rounded,
-              aspectRatio: '1:1',
-              photoCount: 9,
+              name: 'Story Collage',
+              preview: Icons.auto_awesome_mosaic_rounded,
+              aspectRatio: '9:16',
+              photoCount: 3,
               type: TemplateType.photo,
             ),
             TemplateItem(
-              name: '5 Photo Split',
-              preview: Icons.view_agenda_rounded,
+              name: 'Feed Post',
+              preview: Icons.crop_square_rounded,
               aspectRatio: '1:1',
-              photoCount: 5,
+              photoCount: 4,
+              type: TemplateType.photo,
+            ),
+          ],
+        ),
+      ],
+    ),
+    TemplateCategory(
+      name: 'Photo',
+      icon: Icons.photo_camera_rounded,
+      sections: [
+        TemplateSection(
+          name: 'Single Photo',
+          templates: [
+            TemplateItem(
+              name: 'Portrait Photo',
+              preview: Icons.person_rounded,
+              aspectRatio: '9:16',
               type: TemplateType.photo,
             ),
             TemplateItem(
-              name: '7 Photo Mosaic',
-              preview: Icons.view_quilt_rounded,
-              aspectRatio: '1:1',
-              photoCount: 7,
+              name: 'Landscape Photo',
+              preview: Icons.landscape_rounded,
+              aspectRatio: '16:9',
               type: TemplateType.photo,
+            ),
+            TemplateItem(
+              name: 'Square Photo',
+              preview: Icons.crop_square_rounded,
+              aspectRatio: '1:1',
+              type: TemplateType.photo,
+            ),
+          ],
+        ),
+      ],
+    ),
+    TemplateCategory(
+      name: 'Video',
+      icon: Icons.videocam_rounded,
+      sections: [
+        TemplateSection(
+          name: 'Short Form',
+          templates: [
+            TemplateItem(
+              name: 'Reels Video',
+              preview: Icons.play_circle_rounded,
+              aspectRatio: '9:16',
+              type: TemplateType.video,
+            ),
+            TemplateItem(
+              name: 'YouTube Video',
+              preview: Icons.smart_display_rounded,
+              aspectRatio: '16:9',
+              type: TemplateType.video,
+            ),
+            TemplateItem(
+              name: 'Story Video',
+              preview: Icons.movie_rounded,
+              aspectRatio: '9:16',
+              type: TemplateType.video,
             ),
           ],
         ),
@@ -88,27 +142,20 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.camera_alt_rounded,
       sections: [
         TemplateSection(
-          name: 'Collage',
+          name: 'Posts',
           templates: [
             TemplateItem(
-              name: 'Story Collage',
-              preview: Icons.auto_awesome_mosaic_rounded,
-              aspectRatio: '9:16',
-              photoCount: 3,
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Post Collage',
+              name: 'Instagram Post',
               preview: Icons.grid_view_rounded,
               aspectRatio: '1:1',
               photoCount: 4,
               type: TemplateType.photo,
             ),
             TemplateItem(
-              name: 'Carousel Collage',
-              preview: Icons.view_carousel_rounded,
-              aspectRatio: '1:1',
-              photoCount: 6,
+              name: 'Instagram Story',
+              preview: Icons.auto_awesome_mosaic_rounded,
+              aspectRatio: '9:16',
+              photoCount: 3,
               type: TemplateType.photo,
             ),
           ],
@@ -120,27 +167,20 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.facebook_rounded,
       sections: [
         TemplateSection(
-          name: 'Collage',
+          name: 'Social',
           templates: [
             TemplateItem(
-              name: 'Post Collage',
-              preview: Icons.grid_view_rounded,
-              aspectRatio: '1.91:1',
-              photoCount: 4,
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Story Collage',
-              preview: Icons.auto_awesome_mosaic_rounded,
-              aspectRatio: '9:16',
-              photoCount: 3,
-              type: TemplateType.photo,
-            ),
-            TemplateItem(
-              name: 'Cover Collage',
+              name: 'Facebook Cover',
               preview: Icons.panorama_rounded,
               aspectRatio: '2.7:1',
               photoCount: 3,
+              type: TemplateType.photo,
+            ),
+            TemplateItem(
+              name: 'Facebook Post',
+              preview: Icons.crop_square_rounded,
+              aspectRatio: '1.91:1',
+              photoCount: 4,
               type: TemplateType.photo,
             ),
           ],
@@ -152,14 +192,19 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.play_circle_filled_rounded,
       sections: [
         TemplateSection(
-          name: 'Collage',
+          name: 'Video Formats',
           templates: [
             TemplateItem(
-              name: 'YouTube Collage',
-              preview: Icons.grid_view_rounded,
+              name: 'YouTube Thumbnail',
+              preview: Icons.image_rounded,
               aspectRatio: '16:9',
-              photoCount: 4,
               type: TemplateType.photo,
+            ),
+            TemplateItem(
+              name: 'YouTube Intro',
+              preview: Icons.videocam_rounded,
+              aspectRatio: '16:9',
+              type: TemplateType.video,
             ),
           ],
         ),
@@ -170,13 +215,18 @@ class _TemplatesScreenState extends State<TemplatesScreen>
       icon: Icons.music_note_rounded,
       sections: [
         TemplateSection(
-          name: 'Collage',
+          name: 'Short Video',
           templates: [
             TemplateItem(
-              name: 'TikTok Collage',
-              preview: Icons.auto_awesome_mosaic_rounded,
+              name: 'TikTok Trend',
+              preview: Icons.video_library_rounded,
               aspectRatio: '9:16',
-              photoCount: 3,
+              type: TemplateType.video,
+            ),
+            TemplateItem(
+              name: 'TikTok Cover',
+              preview: Icons.image_rounded,
+              aspectRatio: '9:16',
               type: TemplateType.photo,
             ),
           ],
@@ -205,51 +255,60 @@ class _TemplatesScreenState extends State<TemplatesScreen>
   }
 
   void _showTemplateSelected(TemplateItem template) {
-    // Route all photo templates to the collage editor.
-    // Non-collage templates use a single-photo layout based on the chosen aspect ratio.
-    if (template.type == TemplateType.photo) {
-      final editorTemplate = template.photoCount != null
-          ? template
-          : TemplateItem(
-              name: template.name,
-              preview: template.preview,
-              aspectRatio: template.aspectRatio,
-              description: template.description,
-              photoCount: 1,
-              type: template.type,
-            );
+    final dimensions = _parseAspectRatio(template.aspectRatio);
+    final appTemplate = AppTemplateModel(
+      id: template.name,
+      name: template.name,
+      category: _categories[_selectedCategoryIndex].name,
+      editorType: template.type == TemplateType.video ? 'video' : 'photo',
+      canvasWidth: dimensions[0],
+      canvasHeight: dimensions[1],
+      elements: const [],
+    );
 
+    if (template.type == TemplateType.video) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CollageEditorScreen(template: editorTemplate),
+          builder: (context) =>
+              VideoTemplateEditorScreen(template: appTemplate),
         ),
       );
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Colors.white),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text('Selected: ${template.name}'),
-            ),
-          ],
+    if (template.photoCount != null && template.photoCount! > 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CollageEditorScreen(
+            template: template,
+          ),
         ),
-        backgroundColor: const Color(0xFF9C27B0),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-        action: SnackBarAction(
-          label: 'USE',
-          textColor: Colors.white,
-          onPressed: () {},
-        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoTemplateEditorScreen(template: appTemplate),
       ),
     );
+  }
+
+  List<int> _parseAspectRatio(String ratio) {
+    final parts = ratio.split(':');
+    if (parts.length != 2) {
+      return [1080, 1920];
+    }
+
+    final width = int.tryParse(parts[0]) ?? 1080;
+    final height = int.tryParse(parts[1]) ?? 1920;
+    return [
+      width <= 0 ? 1080 : width,
+      height <= 0 ? 1920 : height,
+    ];
   }
 
   @override
