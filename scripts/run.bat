@@ -1,6 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
-title Budget Buddy - App Runner (Device / Web)
+title One Stop Editor - App Runner (Device / Web)
 
 set "SCRIPT_DIR=%~dp0"
 if exist "%SCRIPT_DIR%pubspec.yaml" (
@@ -43,11 +43,11 @@ if not exist "%ADB%" (
         if "!ADB!"=="" set "ADB=%%i"
     )
 )
-set "PACKAGE=com.budgetbuddy.app"
+set "PACKAGE=com.onestopeditor.one_stop_editor"
 set "IP_FILE=%PROJECT_DIR%\.device_ip"
 
 echo ========================================
-echo    Budget Buddy - App Runner
+echo    One Stop Editor - App Runner
 echo ========================================
 echo.
 echo -------- System Specs --------
@@ -191,25 +191,25 @@ timeout /t 1 /nobreak >nul
 
 set "DEVICE_ID=%PHONE_IP%:5555"
 
-"%ADB%" devices | findstr /c:"!DEVICE_ID!	device" >nul 2>&1
+"%ADB%" devices | findstr /c:"!DEVICE_ID!" | findstr /v "offline" | findstr "device" >nul 2>&1
 if errorlevel 1 (
     echo [WARNING] Initial connect did not register. Retrying...
     timeout /t 2 /nobreak >nul
     "%ADB%" connect !DEVICE_ID!
     timeout /t 1 /nobreak >nul
-    "%ADB%" devices | findstr /c:"!DEVICE_ID!	device" >nul 2>&1
+    "%ADB%" devices | findstr /c:"!DEVICE_ID!" | findstr /v "offline" | findstr "device" >nul 2>&1
 )
 
 if errorlevel 1 (
     echo.
     echo ====================================================
-    echo   [ERROR] Could not connect to !DEVICE_ID!!
+    echo   [ERROR] Could not connect to !DEVICE_ID!
     echo ====================================================
     echo   Connection was refused or device is unreachable.
     echo.
     echo   Please check:
     echo     1. Phone and PC must be on the SAME Wi-Fi network.
-    echo     2. Ensure the IP address entered is your PHONE's Wi-Fi IP (not router).
+    echo     2. Ensure the IP address entered is your PHONE's Wi-Fi IP - not router.
     echo     3. Keep phone screen ON and unlocked.
     echo ====================================================
     echo.
@@ -217,10 +217,10 @@ if errorlevel 1 (
     goto connection_menu
 )
 
-echo %PHONE_IP%>"%IP_FILE%"
+(echo %PHONE_IP%)>"%IP_FILE%"
 
 echo.
-:: Auto-open Wireless Debugging settings on the phone so the user can confirm it's ON
+REM Auto-open Wireless Debugging settings on the phone so the user can confirm it is ON
 echo Auto-opening Wireless Debugging settings on your phone...
 "%ADB%" shell am start -n com.android.settings/.DevelopmentSettingsActivity >nul 2>&1
 "%ADB%" shell am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS >nul 2>&1
@@ -257,7 +257,7 @@ echo Connecting to %SAVED_IP%:5555...
 timeout /t 1 /nobreak >nul
 set "DEVICE_ID=%SAVED_IP%:5555"
 
-"%ADB%" devices | findstr /c:"!DEVICE_ID!	device" >nul 2>&1
+"%ADB%" devices | findstr /c:"!DEVICE_ID!" | findstr /v "offline" | findstr "device" >nul 2>&1
 if errorlevel 1 (
     echo [WARNING] Direct connect failed. Restarting ADB server and retrying...
     "%ADB%" kill-server >nul 2>&1
@@ -266,10 +266,10 @@ if errorlevel 1 (
     timeout /t 2 /nobreak >nul
     "%ADB%" connect %SAVED_IP%:5555
     timeout /t 1 /nobreak >nul
-    "%ADB%" devices | findstr /c:"!DEVICE_ID!	device" >nul 2>&1
+    "%ADB%" devices | findstr /c:"!DEVICE_ID!" | findstr /v "offline" | findstr "device" >nul 2>&1
     if errorlevel 1 (
         echo.
-        echo [ERROR] Could not connect to %SAVED_IP%:5555!
+        echo [ERROR] Could not connect to %SAVED_IP%:5555
         echo The device is offline or Port 5555 was closed by the phone.
         echo.
         echo Please ensure:
@@ -281,7 +281,7 @@ if errorlevel 1 (
     )
 )
 
-echo %SAVED_IP%>"%IP_FILE%"
+(echo %SAVED_IP%)>"%IP_FILE%"
 echo.
 echo [SUCCESS] Connected to %DEVICE_ID%!
 echo.
@@ -330,7 +330,7 @@ echo Pairing with %PAIR_ADDR%...
 "%ADB%" pair %PAIR_ADDR% %PAIR_CODE%
 if errorlevel 1 (
     echo.
-    echo [ERROR] Pairing failed! Check the address and code and try again.
+    echo [ERROR] Pairing failed. Check the address and code and try again.
     echo.
     pause
     goto connection_menu
@@ -359,7 +359,7 @@ if not "%EXTRACTED_IP%"=="" (
     timeout /t 2 /nobreak >nul
     "%ADB%" connect %EXTRACTED_IP%:5555 >nul 2>&1
     set "DEVICE_ID=%EXTRACTED_IP%:5555"
-    echo %EXTRACTED_IP%>"%IP_FILE%"
+    (echo %EXTRACTED_IP%)>"%IP_FILE%"
 ) else (
     set "DEVICE_ID=%CONNECT_ADDR%"
 )
@@ -403,7 +403,7 @@ echo      - Turn ON "USB debugging (Security settings)"
 echo      - Turn OFF "MIUI optimization" / "System optimization" if present
 echo   3. Phone Settings ^> Wi-Fi ^> Additional settings:
 echo      - Turn OFF "Wi-Fi power saving" / "Wi-Fi assistant sleep mode"
-echo   4. Phone Settings ^> Apps ^> Manage Apps ^> Budget Buddy:
+echo   4. Phone Settings ^> Apps ^> Manage Apps ^> One Stop Editor:
 echo      - Battery Saver: Set to "No restrictions"
 echo      - Autostart: Turn ON
 echo ----------------------------------------------------
@@ -469,9 +469,9 @@ echo Active Target: !DEVICE_ID! (Android)
 echo ----------------------------------------
 echo.
 
-"%ADB%" devices | findstr /c:"!DEVICE_ID!	device" >nul 2>&1
+"%ADB%" devices | findstr /c:"!DEVICE_ID!" | findstr /v "offline" | findstr "device" >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] Device !DEVICE_ID! is offline or not found!
+    echo [ERROR] Device !DEVICE_ID! is offline or not found.
     pause
     goto connection_menu
 )
@@ -1167,7 +1167,7 @@ echo Connecting to %SAVED_IP%:5555...
 "%ADB%" connect %SAVED_IP%:5555
 set "DEVICE_ID=%SAVED_IP%:5555"
 timeout /t 1 /nobreak >nul
-"%ADB%" devices | findstr /c:"%DEVICE_ID%	device" >nul 2>&1
+"%ADB%" devices | findstr /c:"%DEVICE_ID%" | findstr /v "offline" | findstr "device" >nul 2>&1
 if errorlevel 1 (
     echo.
     echo [ERROR] Connection to %SAVED_IP%:5555 failed [Device is offline or refusing port 5555].
@@ -1283,7 +1283,7 @@ if not errorlevel 1 (
         "%ADB%" connect %SAVED_IP%:5555 >nul 2>&1
         timeout /t 1 /nobreak >nul
     )
-    "%ADB%" devices | findstr /c:"%DEVICE_ID%	device" >nul 2>&1
+    "%ADB%" devices | findstr /c:"%DEVICE_ID%" | findstr /v "offline" | findstr "device" >nul 2>&1
     if not errorlevel 1 exit /b 0
 )
 exit /b 1
