@@ -27,12 +27,44 @@ if not exist "%SCRIPTS_DIR%prepare_ota_release.ps1" (
     )
 )
 
-if not exist "%JAVA_HOME%\bin\java.exe" (
-    if exist "C:\Program Files\Java\jdk-22\bin\java.exe" (
-        set "JAVA_HOME=C:\Program Files\Java\jdk-22"
-    ) else if exist "C:\Progra~1\Java\jdk-22\bin\java.exe" (
-        set "JAVA_HOME=C:\Progra~1\Java\jdk-22"
+:: Find compatible JDK (Java 17..23) for Flutter & Gradle (specifically avoids incompatible Java 25 / 25.0.2)
+set "COMPAT_JAVA="
+if exist "%SCRIPTS_DIR%find_compatible_jdk.ps1" (
+    for /f "usebackq delims=" %%j in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPTS_DIR%find_compatible_jdk.ps1" 2^>nul`) do (
+        if exist "%%j\bin\java.exe" set "COMPAT_JAVA=%%j"
     )
+)
+
+:: Fallback if PowerShell returned empty
+if not "%COMPAT_JAVA%"=="" goto jdk_configured
+if exist "C:\Program Files\Java\jdk-21\bin\java.exe" set "COMPAT_JAVA=C:\Program Files\Java\jdk-21"
+if exist "C:\Program Files\Java\jdk-17\bin\java.exe" if "%COMPAT_JAVA%"=="" set "COMPAT_JAVA=C:\Program Files\Java\jdk-17"
+if exist "C:\Program Files\Java\jdk-22\bin\java.exe" if "%COMPAT_JAVA%"=="" set "COMPAT_JAVA=C:\Program Files\Java\jdk-22"
+
+:jdk_configured
+if "%COMPAT_JAVA%"=="" goto no_compat_jdk
+
+set "JAVA_HOME=%COMPAT_JAVA%"
+set "PATH=%COMPAT_JAVA%\bin;%PATH%"
+call flutter config --jdk-dir="%COMPAT_JAVA%" >nul 2>&1
+
+REM Synchronize org.gradle.java.home in android/gradle.properties
+if exist "%PROJECT_DIR%\android\gradle.properties" (
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "$p = '%PROJECT_DIR%\android\gradle.properties'; $val = '%COMPAT_JAVA%'.Replace('\', '\\'); $lines = @((Get-Content $p) | Where-Object { $_ -notmatch '^\s*org\.gradle\.java\.home\s*=' }); $lines += 'org.gradle.java.home=' + $val; $lines | Set-Content $p" >nul 2>&1
+)
+goto jdk_done
+
+:no_compat_jdk
+echo [WARNING] No compatible JDK [Java 17-23] was found.
+echo Gradle and Kotlin do not support Java 25 [version 25.0.2].
+echo If builds fail, please install JDK 21 from https://adoptium.net/
+echo.
+
+:jdk_done
+
+:: Terminate any stale Gradle daemons running with incompatible Java versions
+if exist "%PROJECT_DIR%\android\gradlew.bat" (
+    call "%PROJECT_DIR%\android\gradlew.bat" --stop >nul 2>&1
 )
 
 call :ensure_pub
@@ -633,12 +665,12 @@ echo.
 call :apply_device_optimizations
 call :start_keepalive
 echo [1/2] Spawning Mobile Debug Window (%DEVICE_ID%)...
-powershell -NoProfile -Command "Start-Process cmd.exe -ArgumentList '/k title Budget Buddy - Mobile Debug (%DEVICE_ID%) && echo. && echo ======================================================== && echo   Budget Buddy - MOBILE DEBUG (%DEVICE_ID%) && echo   Hot Reload: press ''r''  ^|  Hot Restart: press ''R''  ^|  Quit: ''q'' && echo ======================================================== && echo. && flutter run --android-skip-build-dependency-validation -d %DEVICE_ID%' -WorkingDirectory '%PROJECT_DIR%'"
+powershell -NoProfile -Command "Start-Process cmd.exe -ArgumentList '/k title One Stop Editor - Mobile Debug (%DEVICE_ID%) && echo. && echo ======================================================== && echo   One Stop Editor - MOBILE DEBUG (%DEVICE_ID%) && echo   Hot Reload: press ''r''  ^|  Hot Restart: press ''R''  ^|  Quit: ''q'' && echo ======================================================== && echo. && flutter run --android-skip-build-dependency-validation -d %DEVICE_ID%' -WorkingDirectory '%PROJECT_DIR%'"
 
 timeout /t 2 /nobreak >nul
 
 echo [2/2] Spawning Web Edge Debug Window...
-powershell -NoProfile -Command "Start-Process cmd.exe -ArgumentList '/k title Budget Buddy - Web Edge Debug && echo. && echo ======================================================== && echo   Budget Buddy - WEB EDGE DEBUG (Microsoft Edge) && echo   Hot Reload: press ''r''  ^|  Hot Restart: press ''R''  ^|  Quit: ''q'' && echo ======================================================== && echo. && flutter run -d edge' -WorkingDirectory '%PROJECT_DIR%'"
+powershell -NoProfile -Command "Start-Process cmd.exe -ArgumentList '/k title One Stop Editor - Web Edge Debug && echo. && echo ======================================================== && echo   One Stop Editor - WEB EDGE DEBUG (Microsoft Edge) && echo   Hot Reload: press ''r''  ^|  Hot Restart: press ''R''  ^|  Quit: ''q'' && echo ======================================================== && echo. && flutter run -d edge' -WorkingDirectory '%PROJECT_DIR%'"
 
 echo.
 echo ====================================================
@@ -688,7 +720,7 @@ if not "%IS_WEB%"=="1" (
 )
 call :apply_device_optimizations
 call :start_keepalive
-powershell -NoProfile -Command "Start-Process cmd.exe -ArgumentList '/k title Budget Buddy - Debug (%DEVICE_ID%) && echo. && echo ======================================================== && echo   Budget Buddy - DEBUG (%DEVICE_ID%) && echo   Hot Reload: press ''r''  ^|  Hot Restart: press ''R''  ^|  Quit: ''q'' && echo ======================================================== && echo. && flutter run --android-skip-build-dependency-validation -d %DEVICE_ID%' -WorkingDirectory '%PROJECT_DIR%'"
+powershell -NoProfile -Command "Start-Process cmd.exe -ArgumentList '/k title One Stop Editor - Debug (%DEVICE_ID%) && echo. && echo ======================================================== && echo   One Stop Editor - DEBUG (%DEVICE_ID%) && echo   Hot Reload: press ''r''  ^|  Hot Restart: press ''R''  ^|  Quit: ''q'' && echo ======================================================== && echo. && flutter run --android-skip-build-dependency-validation -d %DEVICE_ID%' -WorkingDirectory '%PROJECT_DIR%'"
 echo.
 echo [SUCCESS] Dedicated debug terminal opened in new window!
 echo Hot reload (r) and hot restart (R) are active in that window.
