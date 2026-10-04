@@ -62,10 +62,6 @@ echo.
 
 :jdk_done
 
-:: Terminate any stale Gradle daemons running with incompatible Java versions
-if exist "%PROJECT_DIR%\android\gradlew.bat" (
-    call "%PROJECT_DIR%\android\gradlew.bat" --stop >nul 2>&1
-)
 
 call :ensure_pub
 
@@ -1102,8 +1098,6 @@ goto handle_run_end
 
 :buildrun
 echo.
-echo Auto-uninstalling existing build to prevent signature mismatch...
-if not "%IS_WEB%"=="1" if not "%DEVICE_ID%"=="" "%ADB%" -s %DEVICE_ID% uninstall %PACKAGE% >nul 2>&1
 
 echo Building and running app (release)...
 echo.
