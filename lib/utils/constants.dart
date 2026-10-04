@@ -4,6 +4,7 @@ class AppColors {
   // Brand Palette: Purple, Pink, Green blend
   static const Color primaryPurple = Color(0xFF7C3AED);
   static const Color accentPink = Color(0xFFEC4899);
+  static const Color secondaryPink = Color(0xFFEC4899);
   static const Color accentGreen = Color(0xFF10B981);
 
   // Surfaces & Backgrounds (No glows, clean dark slate)
