@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color darkBlue = Color(0xFF1A1A2E);
-  static const Color darkRed = Color(0xFF3D0814);
-  static const Color darkPurple = Color(0xFF2D0A1C);
+  // Brand Palette: Purple, Pink, Green blend
+  static const Color primaryPurple = Color(0xFF7C3AED);
+  static const Color accentPink = Color(0xFFEC4899);
+  static const Color accentGreen = Color(0xFF10B981);
+
+  // Surfaces & Backgrounds (No glows, clean dark slate)
+  static const Color backgroundDark = Color(0xFF0D0B14);
+  static const Color surfaceDark = Color(0xFF161324);
+  static const Color surfaceCard = Color(0xFF1E1A30);
+  static const Color surfaceBorder = Color(0xFF2D2545);
+
+  // Typography
+  static const Color textPrimary = Color(0xFFF8FAFC);
+  static const Color textSecondary = Color(0xFF94A3B8);
+
+  // Status & Feedback
+  static const Color errorRed = Color(0xFFEF4444);
+
+  // Legacy mappings for backward compatibility
+  static const Color darkBlue = Color(0xFF0D0B14);
+  static const Color darkRed = Color(0xFF161324);
+  static const Color darkPurple = Color(0xFF1E1A30);
 }
 
 class AppStrings {
@@ -23,12 +42,12 @@ class AppStrings {
 
 class AppGradient {
   static const LinearGradient background = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
     colors: [
-      AppColors.darkBlue,
-      AppColors.darkRed,
-      AppColors.darkPurple,
+      Color(0xFF0D0B14),
+      Color(0xFF151024),
+      Color(0xFF0D0B14),
     ],
     stops: [0.0, 0.5, 1.0],
   );

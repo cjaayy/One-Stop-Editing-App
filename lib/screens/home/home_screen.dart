@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../utils/constants.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/logo_widget.dart';
 import '../admin/admin_dashboard_screen.dart';
-import '../auth/signup_screen.dart';
+import '../auth/login_screen.dart';
 import '../templates/templates_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 600),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
@@ -38,66 +39,83 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  void _showFeatureSnackBar(String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.info_outline, color: Colors.white),
-            const SizedBox(width: 12),
-            Text('$feature feature coming soon!'),
-          ],
-        ),
-        backgroundColor: const Color(0xFF9C27B0),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final user = authProvider.userModel;
     final isAdmin = user?.isAdmin ?? false;
+    final isLoggedIn = authProvider.isAuthenticated;
+    final displayName = isLoggedIn ? (user?.name ?? 'Creator') : 'Guest';
 
     return Scaffold(
-      backgroundColor: const Color(0xFF2D0A1C),
+      backgroundColor: AppColors.backgroundDark,
       body: GradientBackground(
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: Column(
               children: [
-                // App Bar
-                _buildAppBar(authProvider),
+                // Top Bar with Logo and single Session Action (Sign In / Sign Out)
+                _buildTopBar(isLoggedIn, authProvider),
 
-                // Main Content
+                // Main Studio Action List
                 Expanded(
-                  child: SingleChildScrollView(
+                  child: ListView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-
-                        // Welcome Section
-                        _buildWelcomeSection(
-                          authProvider.isAuthenticated
-                              ? (user?.name ?? 'User')
-                              : 'Guest',
-                        ),
-
-                        const SizedBox(height: 30),
-
-                        // Main Action Buttons
-                        _buildMainActions(isAdmin),
-
-                        const SizedBox(height: 30),
-                      ],
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
                     ),
+                    children: [
+                      _buildHeader(displayName, user?.email, isLoggedIn),
+                      const SizedBox(height: 28),
+                      _buildSectionTitle('Studio Access'),
+                      const SizedBox(height: 14),
+
+                      // Button 1: Dedicated Unified Templates Entry Point
+                      _buildSolidActionButton(
+                        tag: '01',
+                        title: 'Templates',
+                        subtitle: 'Browse all photo & video templates',
+                        badgeText: 'All-in-One',
+                        backgroundColor: AppColors.primaryPurple,
+                        badgeColor: AppColors.accentGreen,
+                        icon: Icons.dashboard_customize_rounded,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TemplatesScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      // Button 2: Admin Dashboard (Only visible for Admins)
+                      if (isAdmin) ...[
+                        const SizedBox(height: 16),
+                        _buildSolidActionButton(
+                          tag: '02',
+                          title: 'Admin Dashboard',
+                          subtitle: 'Create, publish, and manage templates',
+                          badgeText: 'Admin Only',
+                          backgroundColor: const Color(0xFF4C1D95),
+                          badgeColor: AppColors.accentPink,
+                          icon: Icons.admin_panel_settings_rounded,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const AdminDashboardScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+
+                      const SizedBox(height: 32),
+                    ],
                   ),
                 ),
               ],
@@ -108,79 +126,107 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildAppBar(AuthProvider authProvider) {
-    final isLoggedIn = authProvider.isAuthenticated;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  Widget _buildTopBar(bool isLoggedIn, AuthProvider authProvider) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: const BoxDecoration(
+        color: AppColors.surfaceDark,
+        border: Border(
+          bottom: BorderSide(color: AppColors.surfaceBorder, width: 1),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Logo
-          const LogoWidget(
-            fontSize: 12,
-            iconSize: 32,
-          ),
-          // Profile & Settings
+          const LogoWidget(fontSize: 12, iconSize: 28),
           Row(
             children: [
-              IconButton(
-                onPressed: () => _showFeatureSnackBar('Settings'),
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.settings_outlined,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+              // Online / Status indicator
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceCard,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.surfaceBorder),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: AppColors.accentGreen,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      isLoggedIn ? 'Active' : 'Guest Mode',
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              const SizedBox(width: 12),
+
+              // Single Session Action (No duplicates)
               if (isLoggedIn)
-                GestureDetector(
-                  onTap: () => _showLogoutDialog(authProvider),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+                ElevatedButton.icon(
+                  onPressed: () => _showLogoutDialog(authProvider),
+                  icon: const Icon(Icons.logout_rounded, size: 15),
+                  label: const Text('Sign Out'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.surfaceCard,
+                    foregroundColor: AppColors.accentPink,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
                     ),
-                    child: const Icon(
-                      Icons.logout_rounded,
-                      color: Colors.white,
-                      size: 22,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: const BorderSide(color: AppColors.surfaceBorder),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 )
               else
-                GestureDetector(
-                  onTap: () {
+                ElevatedButton.icon(
+                  onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SignupScreen(),
+                        builder: (context) => const LoginScreen(),
                       ),
                     );
                   },
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+                  icon: const Icon(Icons.login_rounded, size: 15),
+                  label: const Text('Sign In'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryPurple,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
                     ),
-                    child: const Icon(
-                      Icons.person_add_rounded,
-                      color: Colors.white,
-                      size: 22,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -191,76 +237,38 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildWelcomeSection(String name) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final isLoggedIn = authProvider.isAuthenticated;
-
+  Widget _buildHeader(String name, String? email, bool isLoggedIn) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: 8),
         Text(
-          isLoggedIn ? 'Welcome back,' : 'Welcome,',
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.7),
-            fontSize: 16,
+          isLoggedIn ? 'Welcome back' : 'Welcome',
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           name,
           style: const TextStyle(
-            color: Colors.white,
-            fontSize: 28,
+            color: AppColors.textPrimary,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          'What would you like to create today?',
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.6),
-            fontSize: 14,
-          ),
-        ),
-        if (!isLoggedIn) ...[
-          const SizedBox(height: 12),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SignupScreen(),
-                ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE91E63).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: const Color(0xFFE91E63).withValues(alpha: 0.3),
-                ),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.person_add_rounded,
-                    color: Color(0xFFE91E63),
-                    size: 16,
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    'Sign up to save your work',
-                    style: TextStyle(
-                      color: Color(0xFFE91E63),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+        if (isLoggedIn && email != null && email.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            email,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -268,51 +276,144 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildMainActions(bool isAdmin) {
-    return Column(
+  Widget _buildSectionTitle(String title) {
+    return Row(
       children: [
-        Center(
-          child: SizedBox(
-            width: 360,
-            child: _MainActionCard(
-              icon: Icons.dashboard_customize_rounded,
-              title: 'Templates',
-              subtitle: 'Browse designs',
-              gradient: const [Color(0xFFE91E63), Color(0xFFFF5722)],
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TemplatesScreen(),
-                  ),
-                );
-              },
-            ),
+        Container(
+          width: 4,
+          height: 14,
+          decoration: BoxDecoration(
+            color: AppColors.accentGreen,
+            borderRadius: BorderRadius.circular(2),
           ),
         ),
-        if (isAdmin) ...[
-          const SizedBox(height: 16),
-          Center(
-            child: SizedBox(
-              width: 360,
-              child: _MainActionCard(
-                icon: Icons.admin_panel_settings_rounded,
-                title: 'Admin Dashboard',
-                subtitle: 'Create user templates',
-                gradient: const [Color(0xFF673AB7), Color(0xFF9C27B0)],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdminDashboardScreen(),
-                    ),
-                  );
-                },
-              ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSolidActionButton({
+    required String tag,
+    required String title,
+    required String subtitle,
+    required String badgeText,
+    required Color backgroundColor,
+    required Color badgeColor,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.12),
+              width: 1,
             ),
           ),
-        ],
-      ],
+          child: Row(
+            children: [
+              // Solid Icon Box
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: Colors.white, size: 26),
+              ),
+              const SizedBox(width: 16),
+
+              // Title and Subtitle
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.2,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: badgeColor,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            badgeText,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 8),
+
+              // Solid Action Arrow
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -320,25 +421,35 @@ class _HomeScreenState extends State<HomeScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF2D1F3D),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: AppColors.surfaceDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.surfaceBorder, width: 1),
+        ),
         title: const Row(
           children: [
-            Icon(Icons.logout, color: Color(0xFFE91E63)),
-            SizedBox(width: 12),
-            Text('Logout', style: TextStyle(color: Colors.white)),
+            Icon(Icons.logout_rounded, color: AppColors.accentPink, size: 22),
+            SizedBox(width: 10),
+            Text(
+              'Sign Out',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         content: const Text(
-          'Are you sure you want to logout?',
-          style: TextStyle(color: Colors.white70),
+          'Are you sure you want to sign out of your account?',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
+            child: const Text(
               'Cancel',
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
           ElevatedButton(
@@ -347,107 +458,16 @@ class _HomeScreenState extends State<HomeScreen>
               await authProvider.signOut();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE91E63),
+              backgroundColor: AppColors.accentPink,
+              foregroundColor: Colors.white,
+              elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Logout', style: TextStyle(color: Colors.white)),
+            child: const Text('Sign Out'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _MainActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final List<Color> gradient;
-  final VoidCallback onTap;
-
-  const _MainActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.gradient,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 160,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradient,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: gradient[0].withValues(alpha: 0.4),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            // Background pattern
-            Positioned(
-              right: -20,
-              bottom: -20,
-              child: Icon(
-                icon,
-                size: 100,
-                color: Colors.white.withValues(alpha: 0.15),
-              ),
-            ),
-            // Content
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -43,6 +43,7 @@ dependencies:
 
   # Utilities
   intl: ^0.19.0
+  http: ^1.2.2
 
   # Environment variables (local .env)
   flutter_dotenv: ^5.0.2

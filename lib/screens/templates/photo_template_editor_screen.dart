@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../models/app_template_model.dart';
+import '../../utils/constants.dart';
 
 class PhotoTemplateEditorScreen extends StatefulWidget {
   final AppTemplateModel template;
@@ -79,7 +80,7 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Photo saved to your gallery'),
-          backgroundColor: Color(0xFF9C27B0),
+          backgroundColor: AppColors.accentGreen,
         ),
       );
     } catch (e) {
@@ -87,7 +88,7 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to save photo: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.errorRed,
         ),
       );
     } finally {
@@ -109,15 +110,45 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
       ..sort((a, b) => a.zIndex.compareTo(b.zIndex));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF2D0A1C),
+      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2D0A1C),
+        backgroundColor: AppColors.surfaceDark,
         foregroundColor: Colors.white,
-        title: Text(widget.template.name),
+        elevation: 0,
+        title: Text(
+          widget.template.name,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
         actions: [
-          IconButton(
-            onPressed: _isSaving ? null : _exportPhoto,
-            icon: const Icon(Icons.download_rounded),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: ElevatedButton.icon(
+              onPressed: _isSaving ? null : _exportPhoto,
+              icon: _isSaving
+                  ? const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.download_rounded, size: 16),
+              label: const Text('Export'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accentGreen,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                textStyle: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -160,7 +191,7 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
       TemplateElement(
         id: 'background',
         type: 'background',
-        color: '#FFFFFF',
+        color: '#161324',
         zIndex: 0,
       ),
       TemplateElement(
@@ -180,7 +211,7 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
     switch (element.type) {
       case 'background':
         return Container(
-          color: _parseColor(element.color, fallback: Colors.white),
+          color: _parseColor(element.color, fallback: AppColors.surfaceDark),
         );
       case 'imageSlot':
         final file = _selectedImages[element.id];
@@ -189,19 +220,45 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(element.radius ?? 0),
             child: Container(
-              color: Colors.grey.shade300,
-              child: file == null
-                  ? const Center(
-                      child: Icon(
-                        Icons.add_photo_alternate,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Image.file(
+              color: AppColors.surfaceDark,
+              child: file != null
+                  ? Image.file(
                       file,
                       fit: BoxFit.cover,
-                    ),
+                    )
+                  : (element.assetUrl != null && element.assetUrl!.isNotEmpty)
+                      ? Image.network(
+                          element.assetUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Center(
+                            child: Icon(
+                              Icons.broken_image_rounded,
+                              size: 40,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        )
+                      : const Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.add_photo_alternate_rounded,
+                                size: 40,
+                                color: AppColors.primaryPurple,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Tap to choose photo',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
             ),
           ),
         );
@@ -213,27 +270,57 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
             final result = await showDialog<String>(
               context: context,
               builder: (dialogContext) => AlertDialog(
-                backgroundColor: const Color(0xFF2D1F3D),
+                backgroundColor: AppColors.surfaceDark,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: const BorderSide(color: AppColors.surfaceBorder),
+                ),
                 title: const Text(
                   'Edit Text',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 content: TextField(
                   controller: controller,
                   style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Enter text',
-                    hintStyle: TextStyle(color: Colors.white54),
+                    hintStyle: const TextStyle(color: AppColors.textSecondary),
+                    filled: true,
+                    fillColor: AppColors.backgroundDark,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: AppColors.surfaceBorder),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: AppColors.primaryPurple),
+                    ),
                   ),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(dialogContext),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
+                    ),
                     child: const Text('Cancel'),
                   ),
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.pop(dialogContext, controller.text),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryPurple,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                     child: const Text('Save'),
                   ),
                 ],
@@ -253,7 +340,7 @@ class _PhotoTemplateEditorScreenState extends State<PhotoTemplateEditorScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: element.fontSize ?? 24,
-                color: _parseColor(element.color, fallback: Colors.black),
+                color: _parseColor(element.color, fallback: Colors.white),
                 fontWeight: FontWeight.bold,
               ),
             ),
